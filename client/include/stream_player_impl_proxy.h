@@ -69,6 +69,7 @@ public:
 
 private:
     static const int GET_FAILED = -1;
+    static constexpr size_t MAX_KEY_RESPONSE_SIZE = 2 * 1024 * 1024;
     static inline BrokerDelegator<StreamPlayerImplProxy> delegator_;
 };
 } // namespace CastEngineClient

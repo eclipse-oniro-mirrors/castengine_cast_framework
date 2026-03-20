@@ -34,6 +34,10 @@ CastSessionImplProxy::~CastSessionImplProxy()
 
 int32_t CastSessionImplProxy::RegisterListener(sptr<ICastSessionListenerImpl> listener)
 {
+    if (!listener) {
+        CLOGE("listener is nullptr!");
+        return CAST_ENGINE_ERROR;
+    }
     MessageParcel data, reply;
     MessageOption option;
 
