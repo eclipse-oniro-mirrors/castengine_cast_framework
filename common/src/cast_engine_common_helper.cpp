@@ -25,7 +25,7 @@
 namespace OHOS {
 namespace CastEngine {
 DEFINE_CAST_ENGINE_LABEL("Cast-Engine-helper");
-constexpr uint32_t MAX_CYCLES_NUM = 10;
+constexpr uint32_t MAX_DRM_CAPABILITY_SIZE = 50;
 
 namespace {
 constexpr int SESSION_KEY_LENGTH = 16;
@@ -156,6 +156,10 @@ bool WriteCastRemoteDevice(Parcel &parcel, const CastRemoteDevice &device)
         parcel.WriteUint32(0);
     }
     uint32_t drmCapabilitySize = device.drmCapabilities.size();
+    if (drmCapabilitySize > MAX_DRM_CAPABILITY_SIZE) {
+        CLOGE("drmCapabilitySize(%{public}u) is invalid", drmCapabilitySize);
+        return false;
+    }
     res = res && parcel.WriteUint32(drmCapabilitySize);
     for (auto iter = device.drmCapabilities.begin(); iter != device.drmCapabilities.end(); iter++) {
         res = res && parcel.WriteString(*iter);
@@ -211,7 +215,11 @@ std::unique_ptr<CastRemoteDevice> ReadCastRemoteDevice(Parcel &parcel)
         device->sessionKey = nullptr;
     }
     uint32_t drmCapabilitySize = parcel.ReadUint32();
-    for (uint32_t i = 0; (i < drmCapabilitySize) && (i < MAX_CYCLES_NUM); i++) {
+    if (drmCapabilitySize > MAX_DRM_CAPABILITY_SIZE) {
+        CLOGE("drmCapabilitySize(%{public}u) is invalid", drmCapabilitySize);
+        return nullptr;
+    }
+    for (uint32_t i = 0; i < drmCapabilitySize; i++) {
         device->drmCapabilities.push_back(parcel.ReadString());
     }
 
@@ -473,6 +481,10 @@ bool WriteTouchPoint(Parcel &parcel, const OHNativeXcomponentTouchPoint &touchPo
 
 bool WriteTouchPoints(Parcel &parcel, const OHNativeXcomponentTouchEvent touchEvent)
 {
+    if (touchEvent.numPoints > OH_MAX_TOUCH_POINTS_NUMBER) {
+        CLOGE("numPoints exceeds max number");
+        return false;
+    }
     for (uint32_t i = 0; i < touchEvent.numPoints; i++) {
         if (!WriteTouchPoint(parcel, touchEvent.touchPoints[i])) {
             return false;

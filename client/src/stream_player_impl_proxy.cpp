@@ -653,6 +653,10 @@ int32_t StreamPlayerImplProxy::ProvideKeyResponse(const std::string &mediaId, co
     MessageParcel reply;
     MessageOption option;
     auto len = response.size();
+    if (len > MAX_KEY_RESPONSE_SIZE) {
+        CLOGE("Key response size exceeds the maximum");
+        return CAST_ENGINE_ERROR;
+    }
     if (len > data.GetDataCapacity()) {
         CLOGD("ProvideKeyResponse SetDataCapacity totalSize: %zu", len);
 
