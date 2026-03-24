@@ -706,6 +706,7 @@ struct EXPORT MediaInfo {
     uint32_t spid{ 0 };
     std::string launchClientData{""};
     std::shared_ptr<Media::PixelMap> albumPixelMap;
+    std::string extrasData{""};
 };
 
 struct EXPORT MediaInfoHolder {
