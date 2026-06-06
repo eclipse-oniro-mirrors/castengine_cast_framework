@@ -778,6 +778,14 @@ struct EXPORT StreamCapability {
     bool isSetVolumeSupported{ false };
 };
 
+struct EXPORT ConnectionConfig {
+    std::string pinCode;
+    int32_t sessionId{INVALID_ID};
+    uint32_t sessionKeyLength{0};
+    const uint8_t *sessionKey{nullptr};
+    TriggerType triggerType{TriggerType::DEFAULT};
+};
+
 enum class EXPORT PlaybackSpeed {
     SPEED_FORWARD_0_75_X = 0,
     SPEED_FORWARD_1_00_X = 1,
