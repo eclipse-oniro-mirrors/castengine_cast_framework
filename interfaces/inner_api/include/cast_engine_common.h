@@ -78,6 +78,7 @@ enum class EXPORT TriggerType {
     ACTIVE_MATCH_TAG = 2,
     PASSIVE_BIND_TAG = 3,
     HIPLAY_DEVICE_BROADCAST = 5,
+    HIPLAY_SCAN_QRCODE = 6,
 };
 
 inline bool EXPORT IsTriggerType(int32_t type)
