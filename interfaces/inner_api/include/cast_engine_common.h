@@ -84,7 +84,7 @@ enum class EXPORT TriggerType {
 inline bool EXPORT IsTriggerType(int32_t type)
 {
     return (type >= static_cast<int32_t>(TriggerType::UNSPEC_TAG)) &&
-        (type <= static_cast<int32_t>(TriggerType::HIPLAY_DEVICE_BROADCAST));
+        (type <= static_cast<int32_t>(TriggerType::HIPLAY_SCAN_QRCODE));
 }
 
 enum class EXPORT DeviceState {
