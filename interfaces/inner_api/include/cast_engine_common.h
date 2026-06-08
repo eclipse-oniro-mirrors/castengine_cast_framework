@@ -783,7 +783,7 @@ struct EXPORT ConnectionConfig {
     int32_t sessionId{INVALID_ID};
     uint32_t sessionKeyLength{0};
     const uint8_t *sessionKey{nullptr};
-    TriggerType triggerType{TriggerType::DEFAULT};
+    TriggerType triggerType{TriggerType::UNSPEC_TAG};
 };
 
 enum class EXPORT PlaybackSpeed {
