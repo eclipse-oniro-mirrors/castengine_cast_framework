@@ -67,7 +67,7 @@ int32_t CastSession::AddDevice(const CastRemoteDevice &remoteDevice, const Conne
         CLOGE("The remote device id is null");
         return ERR_INVALID_PARAM;
     }
-    return proxy_ ? proxy_->AddDevice(remoteDevice, connectionConfig) : CAST_ENGINE_ERROR;
+    return proxy_ ? proxy_->AddDevice(remoteDevice) : CAST_ENGINE_ERROR;
 }
 
 int32_t CastSession::RemoveDevice(const std::string &deviceId, const DeviceRemoveAction &actionType)
