@@ -61,7 +61,7 @@ int32_t CastSession::UnregisterListener()
     return proxy_ ? proxy_->UnregisterListener() : CAST_ENGINE_ERROR;
 }
 
-int32_t CastSession::AddDevice(const CastRemoteDevice &remoteDevice)
+int32_t CastSession::AddDevice(const CastRemoteDevice &remoteDevice, const ConnectionConfig &connectionConfig)
 {
     if (remoteDevice.deviceId.empty()) {
         CLOGE("The remote device id is null");

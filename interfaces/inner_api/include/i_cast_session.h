@@ -51,7 +51,8 @@ public:
 
     virtual int32_t RegisterListener(std::shared_ptr<ICastSessionListener> listener) = 0;
     virtual int32_t UnregisterListener() = 0;
-    virtual int32_t AddDevice(const CastRemoteDevice &remoteDevice) = 0;
+    virtual int32_t AddDevice(const CastRemoteDevice &remoteDevice,
+                              const ConnectionConfig &connectionConfig = ConnectionConfig{}) = 0;
     virtual int32_t RemoveDevice(const std::string &deviceId,
         const DeviceRemoveAction &actionType = DeviceRemoveAction::ACTION_DISCONNECT) = 0;
     virtual int32_t StartAuth(const AuthInfo &authInfo) = 0;

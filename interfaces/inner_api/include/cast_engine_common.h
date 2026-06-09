@@ -78,12 +78,13 @@ enum class EXPORT TriggerType {
     ACTIVE_MATCH_TAG = 2,
     PASSIVE_BIND_TAG = 3,
     HIPLAY_DEVICE_BROADCAST = 5,
+    HIPLAY_SCAN_QRCODE = 6,
 };
 
 inline bool EXPORT IsTriggerType(int32_t type)
 {
     return (type >= static_cast<int32_t>(TriggerType::UNSPEC_TAG)) &&
-        (type <= static_cast<int32_t>(TriggerType::HIPLAY_DEVICE_BROADCAST));
+        (type <= static_cast<int32_t>(TriggerType::HIPLAY_SCAN_QRCODE));
 }
 
 enum class EXPORT DeviceState {
@@ -683,6 +684,7 @@ enum class EXPORT EventId {
     HIPLAY_QUERY_RESPONSE = 4203,
     HIPLAY_CONFIG_MODE = 4204,
     HIPLAY_CONFIG_MODE_RESULT = 4205,
+    HIPLAY_MODE_CHANGE = 4206,
     HIPLAY_END = 4250,
     EVENT_END = 5000,
 };
@@ -775,6 +777,14 @@ struct EXPORT StreamCapability {
     bool isLoopModeSupported{ false };
     bool isToggleFavoriteSupported{ false };
     bool isSetVolumeSupported{ false };
+};
+
+struct EXPORT ConnectionConfig {
+    std::string pinCode;
+    int32_t sessionId{INVALID_ID};
+    uint32_t sessionKeyLength{0};
+    const uint8_t *sessionKey{nullptr};
+    TriggerType triggerType{TriggerType::UNSPEC_TAG};
 };
 
 enum class EXPORT PlaybackSpeed {

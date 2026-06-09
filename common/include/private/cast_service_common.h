@@ -52,7 +52,7 @@ struct CastInnerRemoteDevice {
     int rtspPort{ INVALID_PORT };
     ProtocolType protocolType;
     std::string udid;
-
+    std::string pinCode{""};
     std::string localIp;
     std::string remoteIp;
     std::string networkId;
