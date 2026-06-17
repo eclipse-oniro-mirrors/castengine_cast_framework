@@ -49,6 +49,7 @@ enum class EXPORT DeviceType {
 };
 
 inline constexpr int EXPORT INVALID_ID = -1;
+inline constexpr int EXPORT NO_SCREEN_ID = -1;
 
 inline bool EXPORT IsDeviceType(int32_t type)
 {
@@ -268,6 +269,7 @@ struct EXPORT DeviceStateInfo {
     std::string deviceId{};
     ReasonCode reasonCode{ ReasonCode::REASON_DEFAULT };
     int32_t radarErrCode = 0;
+    int32_t screenId = NO_SCREEN_ID;
 };
 
 struct EXPORT VideoSize {
@@ -583,6 +585,14 @@ public:
     }
 };
 
+struct EXPORT ServiceInfo {
+    int64_t serviceId;
+    int32_t screenId;
+    int32_t nameLength;
+    std::string serviceName;
+    bool isTrusted;
+};
+
 struct EXPORT CastRemoteDevice {
     std::string deviceId;
     std::string deviceName;
@@ -610,6 +620,7 @@ struct EXPORT CastRemoteDevice {
     std::string bleMac{"DD:DD:DD:DD:DD:DD"};
     std::string uuid {""};
     bool isSupportDeviceCast{ false };
+    std::vector<ServiceInfo> serviceInfos;
 };
 
 enum class EXPORT HiPlayCastMode {
