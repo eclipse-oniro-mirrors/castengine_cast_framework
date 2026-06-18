@@ -64,6 +64,7 @@ struct CastInnerRemoteDevice {
     std::string modelName;
     std::string manufacturerName;
     bool isTrushed;
+    std::vector<ServiceInfo> serviceInfos;
 
     bool operator==(const CastInnerRemoteDevice &rhs) const
     {
