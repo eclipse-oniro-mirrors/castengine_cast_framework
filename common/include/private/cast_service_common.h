@@ -57,7 +57,7 @@ struct CastInnerRemoteDevice {
     std::string remoteIp;
     std::string networkId;
     std::string authVersion;
-    bool isLeagacy{ false };
+    bool isLegacy{ false };
     CapabilityType capability{ CapabilityType::CAST_PLUS };
     uint32_t dlnaDeviceId{ static_cast<uint32_t>(INVALID_ID) };
     std::vector<std::string> drmCapabilities;

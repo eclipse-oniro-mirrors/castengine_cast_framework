@@ -648,9 +648,9 @@ bool ConnectionManager::ConnectDevice(const CastInnerRemoteDevice &dev, const Pr
 
     auto &deviceId = dev.deviceId;
     CLOGI("deviceId %{public}s, protocolType %{public}d, capabilityInfo %{public}d, wifiIp %{public}s, "
-          "bleMac %{public}s, isLeagacy %{public}d, isFresh wifi %{public}d, ble %{public}d",
+          "bleMac %{public}s, isLegacy %{public}d, isFresh wifi %{public}d, ble %{public}d",
           Utils::Mask(deviceId).c_str(), protocolType, dev.capabilityInfo, Utils::Mask(dev.wifiIp).c_str(),
-          Utils::Mask(dev.bleMac).c_str(), dev.isLeagacy, dev.isWifiFresh, dev.isBleFresh);
+          Utils::Mask(dev.bleMac).c_str(), dev.isLegacy, dev.isWifiFresh, dev.isBleFresh);
 
     if (!UpdateDeviceState(deviceId, RemoteDeviceState::CONNECTING)) {
         CLOGE("Device(%s) is missing", deviceId.c_str());

@@ -200,8 +200,8 @@ private:
     bool IsVtpUsed(ChannelType type);
     bool IsChannelClient(ChannelType type);
     bool IsChannelNeeded(ChannelType type);
-    std::pair<int, int> GetLeagacyMediaPort(ChannelType type, int port, bool isLeagacy);
-    std::pair<int, int> GetMediaPort(ChannelType type, int port, bool isLeagacy);
+    std::pair<int, int> GetLeagacyMediaPort(ChannelType type, int port, bool isLegacy);
+    std::pair<int, int> GetMediaPort(ChannelType type, int port, bool isLegacy);
     std::optional<int> SetupMedia(const CastInnerRemoteDevice &remote, ChannelType type, int ports);
     void InitRtspParamInfo(std::shared_ptr<CastRemoteDeviceInfo> remoteDeviceInfo);
     std::shared_ptr<ICastStreamManager> StreamManagerGetter();

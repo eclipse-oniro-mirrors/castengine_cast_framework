@@ -468,9 +468,9 @@ napi_value ConvertCastRemoteDeviceToJS(napi_env env, const CastRemoteDevice &cas
     napi_value networkId = nullptr;
     NAPI_CALL(env, napi_create_string_utf8(env, castRemoteDevice.networkId.c_str(), NAPI_AUTO_LENGTH, &networkId));
     NAPI_CALL(env, napi_set_named_property(env, result, "networkId", networkId));
-    napi_value isLeagacy = nullptr;
-    NAPI_CALL(env, napi_get_boolean(env, castRemoteDevice.isLeagacy, &isLeagacy));
-    NAPI_CALL(env, napi_set_named_property(env, result, "isLeagacy", isLeagacy));
+    napi_value isLegacy = nullptr;
+    NAPI_CALL(env, napi_get_boolean(env, castRemoteDevice.isLegacy, &isLegacy));
+    NAPI_CALL(env, napi_set_named_property(env, result, "isLegacy", isLegacy));
     napi_value mediumTypes = nullptr;
     NAPI_CALL(env, napi_create_int32(env, static_cast<int32_t>(castRemoteDevice.mediumTypes), &mediumTypes));
     NAPI_CALL(env, napi_set_named_property(env, result, "mediumTypes", mediumTypes));

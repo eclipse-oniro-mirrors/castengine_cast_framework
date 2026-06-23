@@ -465,7 +465,7 @@ bool CastSessionImpl::ChannelManagerListenerImpl::SetAndCheckMediaChannel(Module
 
     if (session->property_.protocolType == ProtocolType::CAST_PLUS_MIRROR ||
         session->property_.protocolType == ProtocolType::CAST_PLUS_STREAM ||
-        (session->property_.protocolType == ProtocolType::COOPERATION && !remote.isLeagacy)) {
+        (session->property_.protocolType == ProtocolType::COOPERATION && !remote.isLegacy)) {
         return mediaChannelState_ == (VIDEO_CHANNEL_CONNECTED | AUDIO_CHANNEL_CONNECTED);
     }
     CLOGI("Only Cast Video.");

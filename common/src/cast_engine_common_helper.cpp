@@ -145,7 +145,7 @@ bool WriteCastRemoteDevice(Parcel &parcel, const CastRemoteDevice &device)
         parcel.WriteInt32(static_cast<int32_t>(device.channelType)) && parcel.WriteString(device.deviceId) &&
         parcel.WriteString(device.deviceName) && parcel.WriteString(device.ipAddress) &&
         parcel.WriteString(device.networkId) && parcel.WriteString(device.localIpAddress) &&
-        parcel.WriteBool(device.isLeagacy) && parcel.WriteInt32(device.sessionId) &&
+        parcel.WriteBool(device.isLegacy) && parcel.WriteInt32(device.sessionId) &&
         parcel.WriteUint32(device.mediumTypes) && parcel.WriteUint32(device.protocolCapabilities) &&
         parcel.WriteString(device.modelName) && parcel.WriteString(device.manufacturerName) &&
         parcel.WriteBool(device.isTrushed);
@@ -200,7 +200,7 @@ std::unique_ptr<CastRemoteDevice> ReadCastRemoteDevice(Parcel &parcel)
     device->ipAddress = parcel.ReadString();
     device->networkId = parcel.ReadString();
     device->localIpAddress = parcel.ReadString();
-    device->isLeagacy = parcel.ReadBool();
+    device->isLegacy = parcel.ReadBool();
     device->sessionId = parcel.ReadInt32();
     device->mediumTypes = parcel.ReadUint32();
     device->protocolCapabilities = parcel.ReadUint32();

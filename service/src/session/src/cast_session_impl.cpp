@@ -166,7 +166,7 @@ int32_t CastSessionImpl::AddDevice(const CastRemoteDevice &remoteDevice)
             .subDeviceType = remoteDevice.subDeviceType,
             .ipAddress = remoteDevice.ipAddress, .sessionId = sessionId_,
             .channelType = remoteDevice.channelType, .networkId = remoteDevice.networkId,
-            .isLeagacy = remoteDevice.isLeagacy,
+            .isLegacy = remoteDevice.isLegacy,
         };
         if (property_.protocolType == ProtocolType::HICAR) {
             remote.sessionKeyLength = remoteDevice.sessionKeyLength;
@@ -760,7 +760,7 @@ bool CastSessionImpl::IsChannelNeeded(ChannelType type)
     return (property_.endType != EndType::CAST_SINK) || !IsVtpUsed(type);
 }
 
-std::pair<int, int> CastSessionImpl::GetMediaPort(ChannelType type, int port, bool isLeagacy)
+std::pair<int, int> CastSessionImpl::GetMediaPort(ChannelType type, int port, bool isLegacy)
 {
     if (type != ChannelType::SOFT_BUS) {
         if (IsChannelClient(type)) {
@@ -774,14 +774,14 @@ std::pair<int, int> CastSessionImpl::GetMediaPort(ChannelType type, int port, bo
         // softbus source
         return (property_.protocolType == ProtocolType::CAST_PLUS_MIRROR ||
             property_.protocolType == ProtocolType::CAST_PLUS_STREAM ||
-            (property_.protocolType == ProtocolType::COOPERATION && !isLeagacy)) ?
+            (property_.protocolType == ProtocolType::COOPERATION && !isLegacy)) ?
             std::pair<int, int> { INVALID_PORT, INVALID_PORT } :
             std::pair<int, int> { INVALID_PORT, UNNEEDED_PORT };
     }
 
     if (property_.protocolType == ProtocolType::CAST_PLUS_MIRROR ||
         property_.protocolType == ProtocolType::CAST_PLUS_STREAM ||
-        (property_.protocolType == ProtocolType::COOPERATION && !isLeagacy)) {
+        (property_.protocolType == ProtocolType::COOPERATION && !isLegacy)) {
         if (!IsVtpUsed(type)) {
             // softbus sink
             // audio port is same as video base on tcp protocol, softbus don't care about the port.
@@ -1395,7 +1395,7 @@ int32_t CastSessionImpl::GetRemoteDeviceInfo(std::string deviceId, CastRemoteDev
         device->deviceType, device->rawDeviceType, device->subDeviceType,
         device->ipAddress, device->channelType,
         device->capability, device->capabilityInfo,
-        *networkId, "", 0, nullptr, device->isLeagacy,
+        *networkId, "", 0, nullptr, device->isLegacy,
         device->sessionId, device->drmCapabilities,
     };
 

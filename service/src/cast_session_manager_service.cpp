@@ -219,7 +219,7 @@ public:
             std::pair<CastRemoteDevice, bool> remoteDevice;
             remoteDevice.first = CastRemoteDevice{ device.deviceId, device.deviceName, device.deviceType,
                 device.rawDeviceType, device.subDeviceType, device.ipAddress, device.channelType, device.capability,
-                device.capabilityInfo, device.networkId, "", 0, nullptr, device.isLeagacy, device.sessionId,
+                device.capabilityInfo, device.networkId, "", 0, nullptr, device.isLegacy, device.sessionId,
                 device.drmCapabilities, device.mediumTypes };
 
             remoteDevice.second = (device.capabilityInfo & static_cast<uint32_t>(ProtocolType::CAST_PLUS_STREAM)) != 0;
