@@ -611,7 +611,7 @@ struct EXPORT CastRemoteDevice {
     std::string localIpAddress{ "" };
     uint32_t sessionKeyLength{ 0 };
     const uint8_t *sessionKey{ nullptr };
-    bool isLeagacy{ false };
+    bool isLegacy{ false };
     int sessionId{ INVALID_ID };
     std::vector<std::string> drmCapabilities;
     uint32_t mediumTypes{ 0 };
