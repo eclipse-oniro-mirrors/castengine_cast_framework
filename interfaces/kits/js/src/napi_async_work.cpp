@@ -111,8 +111,8 @@ napi_value NapiAsyncWork::Enqueue(napi_env env, std::shared_ptr<NapiAsyncTask> n
             CLOGD("napi_async_execute_callback status=%{public}d", task->status);
             if (task->execute && task->status == napi_ok) {
                 task->execute();
-                task->execute = nullptr;
             }
+            task->execute = nullptr;
         },
         [](napi_env env, napi_status status, void *data) {
             if (data == nullptr) {
@@ -126,8 +126,8 @@ napi_value NapiAsyncWork::Enqueue(napi_env env, std::shared_ptr<NapiAsyncTask> n
             }
             if ((task->complete) && (status == napi_ok) && (task->status == napi_ok)) {
                 task->complete(task->output);
-                task->complete = nullptr;
             }
+            task->complete = nullptr;
             GenerateOutput(task);
             task->hold.reset(); // release napiAsyncTask.
         }, reinterpret_cast<void *>(napiAsyncTask.get()), &napiAsyncTask->work);
