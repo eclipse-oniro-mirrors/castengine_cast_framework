@@ -137,6 +137,8 @@ private:
 
     void DestroyConsulationSession(const std::string &deviceId);
     void RemoveTransIdMapping(int transportId);
+    std::string GetPendingDeviceId(int socketId);
+    void RemovePendingSocket(int socketId);
     int GetCastSessionId(int transportId);
 
     bool ParseAndCheckJsonData(const std::string &data, json &jsonData);

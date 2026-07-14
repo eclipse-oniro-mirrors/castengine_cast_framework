@@ -324,7 +324,7 @@ int32_t StreamPlayerImplStub::DoGetPlayerStatusTask(MessageParcel &data, Message
 int32_t StreamPlayerImplStub::DoGetPositionTask(MessageParcel &data, MessageParcel &reply)
 {
     static_cast<void>(data);
-    int32_t position;
+    int32_t position = 0;
     int32_t ret = GetPosition(position);
     if (!reply.WriteInt32(ret)) {
         CLOGE("Failed to write ret:%{public}d", ret);
@@ -341,7 +341,7 @@ int32_t StreamPlayerImplStub::DoGetPositionTask(MessageParcel &data, MessageParc
 int32_t StreamPlayerImplStub::DoGetDurationTask(MessageParcel &data, MessageParcel &reply)
 {
     static_cast<void>(data);
-    int32_t duration;
+    int32_t duration = 0;
     int32_t ret = GetDuration(duration);
     if (!reply.WriteInt32(ret)) {
         CLOGE("Failed to write ret:%{public}d", ret);
@@ -358,8 +358,8 @@ int32_t StreamPlayerImplStub::DoGetDurationTask(MessageParcel &data, MessageParc
 int32_t StreamPlayerImplStub::DoGetVolumeTask(MessageParcel &data, MessageParcel &reply)
 {
     static_cast<void>(data);
-    int32_t volume;
-    int32_t maxVolume;
+    int32_t volume = 0;
+    int32_t maxVolume = 0;
     int32_t ret = GetVolume(volume, maxVolume);
     if (!reply.WriteInt32(ret)) {
         CLOGE("Failed to write ret:%{public}d", ret);
@@ -450,7 +450,7 @@ int32_t StreamPlayerImplStub::DoGetAvailableCapabilityTask(MessageParcel &data, 
 int32_t StreamPlayerImplStub::DoGetMediaInfoHolderTask(MessageParcel &data, MessageParcel &reply)
 {
     static_cast<void>(data);
-    MediaInfoHolder mediaInfoHolder;
+    MediaInfoHolder mediaInfoHolder{};
     int32_t ret = GetMediaInfoHolder(mediaInfoHolder);
     if (!reply.WriteInt32(ret)) {
         CLOGE("Failed to write ret:%{public}d", ret);

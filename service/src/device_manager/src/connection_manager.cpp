@@ -159,7 +159,16 @@ static void OnShutdown(int32_t socket, ShutdownReason reason)
     CLOGI("OnShutdown, socket id = %{public}d", socket);
     auto device = CastDeviceDataManager::GetInstance().GetDeviceByTransId(socket);
     if (device == std::nullopt) {
-        CLOGE("Failed to get device by socketId.");
+        // transportId may not be set yet if OnShutdown fires between BindSocket and SetDeviceTransId.
+        // Fall back to pendingSocketMap_ to find the deviceId.
+        std::string deviceId = ConnectionManager::GetInstance().GetPendingDeviceId(socket);
+        if (deviceId.empty()) {
+            CLOGE("Failed to get device by socketId and no pending mapping.");
+            return;
+        }
+        CLOGI("Found device via pendingSocketMap, deviceId = %{public}s", Utils::Mask(deviceId).c_str());
+        ConnectionManager::GetInstance().DestroyConsulationSession(deviceId);
+        ConnectionManager::GetInstance().RemovePendingSocket(socket);
         return;
     }
     CLOGI("notify disconnect %{public}d, deviceId = %{public}s", socket, Utils::Mask(device->deviceId).c_str());
@@ -1225,6 +1234,19 @@ void ConnectionManager::RemoveTransIdMapping(int transportId)
     transIdToCastSessionIdMap_.erase(transportId);
 }
 
+std::string ConnectionManager::GetPendingDeviceId(int socketId)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto it = pendingSocketMap_.find(socketId);
+    return it != pendingSocketMap_.end() ? it->second : "";
+}
+ 
+void ConnectionManager::RemovePendingSocket(int socketId)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    pendingSocketMap_.erase(socketId);
+}
+
 bool ConnectionManager::ParseAndCheckJsonData(const std::string &data, json &jsonData)
 {
     if (!json::accept(data)) {
@@ -1324,10 +1346,17 @@ int ConnectionManager::OpenSoftBusSocket(const std::optional<std::string> &netwo
             continue;
         }
 
+        // Register pending socket before BindSocket so OnShutdown can find the device
+        // during the window between BindSocket and SetDeviceTransId.
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            pendingSocketMap_[socketId] = device.deviceId;
+        }
         bindResult = SoftBus::BindSocket(socketId, protocolType_, isSingle, attemptCount);
         if (bindResult != SOFTBUS_OK) {
             CLOGE("Failed to bind socket, result %{public}d", bindResult);
             Shutdown(socketId);
+            RemovePendingSocket(socketId);
             socketId = INVALID_ID;
             errorCode = bindResult;
             continue;
@@ -1337,10 +1366,13 @@ int ConnectionManager::OpenSoftBusSocket(const std::optional<std::string> &netwo
             CLOGE("deviceState is %{public}d",
                   static_cast<int>(CastDeviceDataManager::GetInstance().GetDeviceState(device.deviceId)));
             Shutdown(socketId);
+            RemovePendingSocket(socketId);
             socketId = INVALID_ID;
             errorCode = CONNECTION_DEVICE_IS_MISSING;
             break;
         }
+        // SetDeviceTransId succeeded; pending mapping no longer needed
+        RemovePendingSocket(socketId);
         break;
     }
     return socketId;

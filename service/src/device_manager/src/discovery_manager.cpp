@@ -275,6 +275,7 @@ void DiscoveryManager::OnDeviceInfoFound(uint16_t subscribeId, const DmDeviceInf
             RemoveSameDeviceLocked(newDevice);
             isDeviceExist = false;
         }
+        remoteDeviceMap_[newDevice] = scanCount_;
     }
 
     if (!isDeviceExist) {
@@ -290,7 +291,6 @@ void DiscoveryManager::OnDeviceInfoFound(uint16_t subscribeId, const DmDeviceInf
         }
     }
 
-    remoteDeviceMap_[newDevice] = scanCount_;
     RecordDeviceFoundType(dmDeviceInfo);
 }
 
@@ -539,6 +539,7 @@ void DiscoveryManager::RecordDeviceFoundType(const DmDeviceInfo dmDevice)
 {
     CLOGI("scanCount_ is %{public}d", scanCount_);
     std::string deviceId = dmDevice.deviceId;
+    std::lock_guard<std::mutex> lock(mutex_);
     if (reportTypeMap_.find(deviceId) == reportTypeMap_.end()) {
         reportTypeMap_.insert({ deviceId, {false, false} });
     }
@@ -635,6 +636,10 @@ void CastPublishDiscoveryCallback::OnPublishResult(int32_t publishId, int32_t pu
 void DiscoveryEventHandler::ProcessEvent(const InnerEvent::Pointer &event)
 {
     DiscoveryManager::GetInstance().StopDmDiscovery();
+    if (!DiscoveryManager::GetInstance().hasStartDiscovery_.load()) {
+        CLOGI("Discovery has been stopped, skip ProcessEvent");
+        return;
+    }
     auto eventId = event->GetInnerEventId();
     switch (eventId) {
         case EVENT_START_DISCOVERY:
