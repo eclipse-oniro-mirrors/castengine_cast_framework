@@ -136,6 +136,7 @@ private:
     std::string convLatin1ToUTF8(std::string &latin1);
 
     void DestroyConsulationSession(const std::string &deviceId);
+    void RemoveTransIdMapping(int transportId);
     int GetCastSessionId(int transportId);
 
     bool ParseAndCheckJsonData(const std::string &data, json &jsonData);

@@ -191,6 +191,7 @@ void TcpSocket::Shutdown(int fd)
     if (fd > INVALID_SOCKET) {
         stopReceive_ = true;
         ::shutdown((fd), SHUT_RDWR);
+        ::close(fd);
     }
 }
 

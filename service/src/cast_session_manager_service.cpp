@@ -586,6 +586,9 @@ int32_t CastSessionManagerService::StartDeviceLogging(int32_t fd, uint32_t maxSi
         }
         return static_cast<int32_t>(LogCodeId::UID_MISMATCH);
     }
+    if (fd >= 0) {
+        close(fd);
+    }
 
     // 待实现 DfxCastEngineStartDeviceLogging
     return CAST_ENGINE_ERROR;
