@@ -129,6 +129,7 @@ int GetLocalFd(const std::string &url)
         return INVALID_VALUE;
     }
     char *nextPtr = nullptr;
+    errno = 0;
     int fd = static_cast<int>(std::strtol(url.c_str(), &nextPtr, DECIMALISM));
     if (errno == ERANGE || *nextPtr != '\0') {
         return INVALID_VALUE;

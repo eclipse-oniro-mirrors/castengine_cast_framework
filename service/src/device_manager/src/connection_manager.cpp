@@ -429,11 +429,12 @@ void ConnectionManager::GrabDevice()
         CLOGE("DeviceGrabState: NO_GRAB");
         return;
     }
-    if (listener_ == nullptr) {
+    auto listener = GetListener();
+    if (!listener) {
         CLOGE("listener_ nullptr.");
         return;
     }
-    listener_->GrabDevice(sessionId_);
+    listener->GrabDevice(sessionId_);
 }
 
 bool ConnectionManager::OpenConsultSession(const CastInnerRemoteDevice &device)
@@ -504,11 +505,12 @@ void ConnectionManager::OnConsultDataReceived(int transportId, const void *data,
     if (device->protocolType == ProtocolType::CAST_PLUS_STREAM) {
         SetSessionProtocolType(castSessionId, device->protocolType);
     }
-    if (!listener_) {
+    auto listener = GetListener();
+    if (!listener) {
         CLOGE("Detect absence of listener_.");
         return;
     }
-    listener_->ReportSessionCreate(castSessionId);
+    listener->ReportSessionCreate(castSessionId);
     device->localCastSessionId = castSessionId;
     if (!CastDeviceDataManager::GetInstance().AddDevice(*device, dmDevice)) {
         return;
@@ -518,7 +520,7 @@ void ConnectionManager::OnConsultDataReceived(int transportId, const void *data,
         CastDeviceDataManager::GetInstance().RemoveDevice(deviceId);
         return;
     }
-    if (!listener_->NotifyRemoteDeviceIsReady(castSessionId, *device)) {
+    if (!listener->NotifyRemoteDeviceIsReady(castSessionId, *device)) {
         CastDeviceDataManager::GetInstance().RemoveDevice(deviceId);
     }
 
@@ -612,8 +614,8 @@ void ConnectionManager::OnConsultDataReceivedFromSink(int transportId, const voi
 bool ConnectionManager::handleConsultData(const json &body, int transportId)
 {
     CLOGI("handleConsultData data from sink %{public}s", body.dump().c_str());
-    if (body.contains(CONSULT_RESULT) && !body[CONSULT_RESULT].is_number()) {
-        CLOGE("consult result data is not number");
+    if (!body.contains(CONSULT_RESULT) || !body[CONSULT_RESULT].is_number()) {
+        CLOGE("consultResult is missing or not a number");
         return false;
     }
 
@@ -678,6 +680,7 @@ bool ConnectionManager::ConnectDevice(const CastInnerRemoteDevice &dev, const Pr
         if (!CastDeviceDataManager::GetInstance().SetDeviceNetworkId(deviceId, networkId) ||
             !OpenConsultSession(dev)) {
             (void)UpdateDeviceState(deviceId, RemoteDeviceState::FOUND);
+            SetConnectingDeviceId("");
             return false;
         }
         (void)UpdateDeviceState(deviceId, RemoteDeviceState::CONNECTED);
@@ -685,6 +688,7 @@ bool ConnectionManager::ConnectDevice(const CastInnerRemoteDevice &dev, const Pr
     }
     if (!BindTarget(dev)) {
         (void)UpdateDeviceState(deviceId, RemoteDeviceState::FOUND);
+        SetConnectingDeviceId("");
         return false;
     }
     std::unique_lock<std::mutex> lock(mutex_);
@@ -713,6 +717,7 @@ void ConnectionManager::DisconnectDevice(const std::string &deviceId)
     protocolType_ = ProtocolType::CAST_PLUS_MIRROR;
     lock.unlock();
     UpdateDeviceState(deviceId, RemoteDeviceState::FOUND);
+    SetConnectingDeviceId("");
     DestroyConsulationSession(deviceId);
     CastDeviceDataManager::GetInstance().GetDeviceByDeviceId(deviceId);
     auto isActiveAuth = CastDeviceDataManager::GetInstance().GetDeviceIsActiveAuth(deviceId);
@@ -776,11 +781,12 @@ int32_t ConnectionManager::GetLocalDeviceInfo(CastLocalDevice &device)
 
 void ConnectionManager::NotifySessionIsReady(int transportId)
 {
-    if (!listener_) {
+    auto listener = GetListener();
+    if (!listener) {
         CLOGE("Detect absence of listener_.");
         return;
     }
-    int castSessionId = listener_->NotifySessionIsReady();
+    int castSessionId = listener->NotifySessionIsReady();
     if (castSessionId == INVALID_ID) {
         CLOGE("sessionId is invalid");
         return;
@@ -1198,6 +1204,7 @@ void ConnectionManager::DestroyConsulationSession(const std::string &deviceId)
     CLOGI("DestroyConsulationSession in tranId = %{public}d", transportId);
     if (transportId != INVALID_ID) {
         CloseSession(transportId);
+        RemoveTransIdMapping(transportId);
     }
 
     auto isSink = CastDeviceDataManager::GetInstance().GetDeviceRole(deviceId);
@@ -1205,6 +1212,15 @@ void ConnectionManager::DestroyConsulationSession(const std::string &deviceId)
         // The sink's Server is only removed when DisableDiscoverable or Deinit is performed.
         return;
     }
+}
+
+void ConnectionManager::RemoveTransIdMapping(int transportId)
+{
+    if (transportId <= INVALID_ID) {
+        return;
+    }
+    std::lock_guard<std::mutex> lock(mutex_);
+    transIdToCastSessionIdMap_.erase(transportId);
 }
 
 bool ConnectionManager::ParseAndCheckJsonData(const std::string &data, json &jsonData)
@@ -1281,8 +1297,7 @@ std::unique_ptr<CastInnerRemoteDevice> ConnectionManager::GetRemoteFromJsonData(
 int ConnectionManager::OpenSoftBusSocket(const std::optional<std::string> &networkId,
                                          const CastInnerRemoteDevice &device, int32_t &errorCode)
 {
-    // Only transortId > INVALID_ID does NOT meaning openSession successfully,
-    // result from OnOpenSession also count.
+    // Only transortId > INVALID_ID does NOT meaning openSession successfully,result from OnOpenSession also count.
     CLOGI("OpenSoftBusSocket in");
     constexpr int32_t attemptCountMax = 2;
     int socketId = INVALID_ID;
@@ -1305,7 +1320,6 @@ int ConnectionManager::OpenSoftBusSocket(const std::optional<std::string> &netwo
             errorCode = socketId;
             continue;
         }
-
         bindResult = SoftBus::BindSocket(socketId, protocolType_, isSingle, attemptCount);
         if (bindResult != SOFTBUS_OK) {
             CLOGE("Failed to bind socket, result %{public}d", bindResult);
@@ -1550,16 +1564,24 @@ void CastBindTargetCallback::HandleConnectDeviceAction(const CastInnerRemoteDevi
 
 bool CastBindTargetCallback::GetSessionKey(const json &authInfo, uint8_t *sessionKey)
 {
-    if (authInfo.contains(TYPE_SESSION_KEY) && authInfo[TYPE_SESSION_KEY].is_array()) {
-        for (int i = 0; i < SESSION_KEY_LENGTH; i++) {
-            sessionKey[i] = authInfo[TYPE_SESSION_KEY][i];
-            CLOGD("get session key auth version 1 %d", static_cast<uint8_t>(authInfo[TYPE_SESSION_KEY][i]));
-        }
-        return true;
-    } else {
+    if (!authInfo.contains(TYPE_SESSION_KEY) || !authInfo[TYPE_SESSION_KEY].is_array()) {
         CLOGE("get sessionkey from json data fail");
         return false;
     }
+    const auto &keyArray = authInfo[TYPE_SESSION_KEY];
+    if (static_cast<int>(keyArray.size()) < SESSION_KEY_LENGTH) {
+        CLOGE("sessionKey array length %{public}zu is shorter than SESSION_KEY_LENGTH %{public}d",
+            keyArray.size(), SESSION_KEY_LENGTH);
+        return false;
+    }
+    for (int i = 0; i < SESSION_KEY_LENGTH; i++) {
+        if (!keyArray[i].is_number()) {
+            CLOGE("sessionKey[%{public}d] is not a number", i);
+            return false;
+        }
+        sessionKey[i] = keyArray[i];
+    }
+    return true;
 }
 
 void CastBindTargetCallback::HandleQueryIpAction(const CastInnerRemoteDevice &remoteDevice, const json &authInfo)

@@ -29,6 +29,7 @@
 #include "cast_engine_log.h"
 #include "securec.h"
 #include "transport.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace CastEngine {
@@ -318,7 +319,7 @@ int SoftBusConnection::OnSendFileProcess(int sessionId, uint64_t bytesUpload, ui
 
 int SoftBusConnection::OnSendFileFinished(int sessionId, const char *firstFile)
 {
-    CLOGD("OnSendFileFinished invoked, firstFile is: %s", firstFile);
+    CLOGD("OnSendFileFinished invoked, firstFile is: %{public}s", Utils::Mask(std::string(firstFile)).c_str());
     auto ret = GetConnection(sessionId);
     if (!ret.first) {
         CLOGE("OnSendFileFinished, Get Connection Failed, sessionId = %d.", sessionId);
@@ -359,7 +360,8 @@ void SoftBusConnection::OnFileTransError(int sessionId)
  */
 int SoftBusConnection::OnReceiveFileStarted(int sessionId, const char *files, int fileCnt)
 {
-    CLOGD("OnReceiveFileStarted invoked, files is: %s, fileCnt: %d", files, fileCnt);
+    CLOGD("OnReceiveFileStarted invoked, files is: %{public}s, fileCnt: %d",
+        Utils::Mask(std::string(files)).c_str(), fileCnt);
     return RET_OK;
 }
 
@@ -371,7 +373,8 @@ int SoftBusConnection::OnReceiveFileProcess(int sessionId, const char *firstFile
 
 void SoftBusConnection::OnReceiveFileFinished(int sessionId, const char *files, int fileCnt)
 {
-    CLOGD("OnReceiveFileFinished invoked, files is: %s fileCnt: %d", files, fileCnt);
+    CLOGD("OnReceiveFileFinished invoked, files is: %{public}s fileCnt: %d",
+        Utils::Mask(std::string(files)).c_str(), fileCnt);
     auto ret = GetConnection(sessionId);
     if (!ret.first) {
         CLOGE("OnReceiveFileFinished, Get Connection Failed, sessionId = %d.", sessionId);
@@ -393,7 +396,7 @@ int SoftBusConnection::SetupSession(std::shared_ptr<IChannelListener> channelLis
 {
     std::string mySessionName = softbus_.GetSpecMySessionName();
     CLOGD("SetupSession In, mySessionName = %{public}s.%{public}s", mySessionName.c_str(),
-        channelRequest_.remoteDeviceInfo.deviceId.c_str());
+        Utils::Mask(channelRequest_.remoteDeviceInfo.deviceId).c_str());
     int ret = SoftBusWrapper::StartSoftBusService(PACKAGE_NAME, mySessionName, &sessionListener_);
     if (ret != RET_OK) {
         CLOGE("StartSoftBusService Failed In SetupSession, mySessionName = %{public}s, ret = %{public}d.",
@@ -413,7 +416,7 @@ int SoftBusConnection::SetupSession(std::shared_ptr<IChannelListener> channelLis
     }
     sessionId = softbus_.OpenSoftBusSession(networkId.value(), softbus_.GetSpecGroupId());
     CLOGD("SetupSession In, mySessionName = %{public}s, sessionId = %{public}d, remoteNetworkId = %{public}s.",
-        mySessionName.c_str(), sessionId, networkId.value().c_str());
+        mySessionName.c_str(), sessionId, Utils::Mask(networkId.value()).c_str());
     if (sessionId <= 0) {
         CLOGE("Open SoftBus Session Failed, mySessionName = %{public}s, sessionId = %{public}d.", mySessionName.c_str(),
             sessionId);

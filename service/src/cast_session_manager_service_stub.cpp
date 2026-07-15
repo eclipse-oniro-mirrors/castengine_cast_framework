@@ -82,6 +82,10 @@ int32_t CastSessionManagerServiceStub::DoRegisterListenerTask(MessageParcel &dat
 
 int32_t CastSessionManagerServiceStub::DoUnregisterListenerTask(MessageParcel &data, MessageParcel &reply)
 {
+    if (!Permission::CheckMirrorPermission() && !Permission::CheckStreamPermission() &&
+        !Permission::CheckPidPermission()) {
+        return ERR_NO_PERMISSION;
+    }
     if (!reply.WriteInt32(UnregisterListener())) {
         CLOGE("Failed to write int value");
         return IPC_STUB_WRITE_PARCEL_ERR;

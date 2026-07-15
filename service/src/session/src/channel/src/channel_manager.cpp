@@ -86,22 +86,23 @@ int ChannelManager::CreateChannel(ChannelRequest &request, std::shared_ptr<IChan
     }
     connection->SetConnectionListener(connectionListener_);
 
-    {
-        std::lock_guard<std::mutex> lg(connectionMapMtx_);
-        connectionMap_.insert(std::pair<ChannelRequest, std::shared_ptr<Connection>>(request, connection));
-    }
-
     bool isVtp = (request.linkType == ChannelLinkType::VTP);
     bool isSink = (request.sessionProperty.endType == EndType::CAST_SINK);
+    int remoteCtrl = -1;
     CLOGI("CreateChannel In, linkType = %{public}d, isVtp = %{public}d, isSink = %{public}d.", request.linkType,
         isVtp, isSink);
     if ((isVtp && isSink) || (!isVtp && !isSink)) {
         CLOGV("CreateChannel In, StartListen.");
-        return connection->StartListen(request, channelListener);
+        remoteCtrl = connection->StartListen(request, channelListener);
     } else {
         CLOGV("CreateChannel In, StartConnection.");
-        return connection->StartConnection(request, channelListener);
+        remoteCtrl = connection->StartConnection(request, channelListener);
     }
+    if (!remoteCtrl) {
+        std::lock_guard<std::mutex> lg(connectionMapMtx_);
+        connectionMap_.insert(std::pair<ChannelRequest, std::shared_ptr<Connection>>(request, connection));
+    }
+    return remoteCtrl;
 }
 
 int ChannelManager::CreateChannel(ChannelRequest &request, std::shared_ptr<IChannelListener> channelListener,
@@ -121,23 +122,23 @@ int ChannelManager::CreateChannel(ChannelRequest &request, std::shared_ptr<IChan
     }
     connection->SetConnectionListener(connectionListener_);
 
-    {
-        std::lock_guard<std::mutex> lg(connectionMapMtx_);
-        connectionMap_.insert(std::pair<ChannelRequest, std::shared_ptr<Connection>>(request, connection));
-    }
-
     bool isVtp = (request.linkType == ChannelLinkType::VTP);
     bool isSink = (request.sessionProperty.endType == EndType::CAST_SINK);
+    int remoteCtrl = -1;
     CLOGI("CreateChannel In, linkType = %{public}d, isVtp = %{public}d, isSink = %{public}d.", request.linkType,
         isVtp, isSink);
     if ((isVtp && isSink) || (!isVtp && !isSink)) {
         CLOGV("CreateChannel In, StartConnection.");
-        int remotectrlPort = connection->StartConnection(request, channelListener);
-        return remotectrlPort;
+        remoteCtrl = connection->StartConnection(request, channelListener);
     } else {
         CLOGV("CreateChannel In, StartListen.");
-        return connection->StartListen(request, channelListener);
+        remoteCtrl = connection->StartListen(request, channelListener);
     }
+    if (!remoteCtrl) {
+        std::lock_guard<std::mutex> lg(connectionMapMtx_);
+        connectionMap_.insert(std::pair<ChannelRequest, std::shared_ptr<Connection>>(request, connection));
+    }
+    return remoteCtrl;
 }
 
 bool ChannelManager::IsRequestValid(const ChannelRequest &request) const

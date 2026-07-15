@@ -240,6 +240,10 @@ bool CastStreamManagerServer::ParseMediaInfoHolder(const json &data, MediaInfoHo
         return false;
     }
     json list = data[KEY_LIST];
+    if (list.empty()) {
+        CLOGE("mediaInfo list is empty");
+        return false;
+    }
     for (size_t i = 0; i < list.size(); i++) {
         MediaInfo mediaInfo = MediaInfo();
         json info = list[i];

@@ -1390,6 +1390,10 @@ int32_t CastSessionImpl::GetRemoteDeviceInfo(std::string deviceId, CastRemoteDev
     }
 
     auto networkId = CastDeviceDataManager::GetInstance().GetDeviceNetworkId(deviceId);
+    if (networkId == std::nullopt) {
+        CLOGE("networkId is not found. deviceId: %{public}s", Utils::Mask(deviceId).c_str());
+        return CAST_ENGINE_ERROR;
+    }
     remoteDevice = CastRemoteDevice {
         device->deviceId, device->deviceName,
         device->deviceType, device->rawDeviceType, device->subDeviceType,

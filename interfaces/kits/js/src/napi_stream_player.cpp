@@ -231,11 +231,12 @@ napi_status NapiStreamPlayer::OnStateChanged(napi_env env, napi_value callback, 
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_PLAYER_STATUS_CHANGED,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_PLAYER_STATUS_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -248,11 +249,12 @@ napi_status NapiStreamPlayer::OnPositionChanged(napi_env env, napi_value callbac
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_POSITION_CHANGED,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_POSITION_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -265,11 +267,12 @@ napi_status NapiStreamPlayer::OnMediaItemChanged(napi_env env, napi_value callba
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_MEDIA_ITEM_CHANGED,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_MEDIA_ITEM_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -282,11 +285,12 @@ napi_status NapiStreamPlayer::OnVolumeChanged(napi_env env, napi_value callback,
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_VOLUME_CHANGED,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_VOLUME_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -299,11 +303,12 @@ napi_status NapiStreamPlayer::OnVideoSizeChanged(napi_env env, napi_value callba
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_VIDEO_SIZE_CHANGED,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_VIDEO_SIZE_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -316,11 +321,12 @@ napi_status NapiStreamPlayer::OnLoopModeChanged(napi_env env, napi_value callbac
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_LOOP_MODE_CHANGED,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_LOOP_MODE_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -333,11 +339,12 @@ napi_status NapiStreamPlayer::OnPlaySpeedChanged(napi_env env, napi_value callba
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_PLAY_SPEED_CHANGED,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_PLAY_SPEED_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -350,11 +357,12 @@ napi_status NapiStreamPlayer::OnPlayerError(napi_env env, napi_value callback, N
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_PLAYER_ERROR,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_PLAYER_ERROR,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -367,11 +375,12 @@ napi_status NapiStreamPlayer::OnNextRequest(napi_env env, napi_value callback, N
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_NEXT_REQUEST,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_NEXT_REQUEST,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -384,11 +393,12 @@ napi_status NapiStreamPlayer::OnPreviousRequest(napi_env env, napi_value callbac
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_PREVIOUS_REQUEST,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_PREVIOUS_REQUEST,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -401,11 +411,12 @@ napi_status NapiStreamPlayer::OnSeekDone(napi_env env, napi_value callback, Napi
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_SEEK_DONE,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_SEEK_DONE,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -418,11 +429,12 @@ napi_status NapiStreamPlayer::OnEndOfStream(napi_env env, napi_value callback, N
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->AddCallback(env, NapiStreamPlayerListener::EVENT_END_OF_STREAM,
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_END_OF_STREAM,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -453,11 +465,12 @@ napi_status NapiStreamPlayer::OffStateChanged(napi_env env, napi_value callback,
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env,
+    if (napiListener->RemoveCallback(env,
         NapiStreamPlayerListener::EVENT_PLAYER_STATUS_CHANGED, callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -470,11 +483,12 @@ napi_status NapiStreamPlayer::OffPositionChanged(napi_env env, napi_value callba
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_POSITION_CHANGED,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_POSITION_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -487,11 +501,12 @@ napi_status NapiStreamPlayer::OffMediaItemChanged(napi_env env, napi_value callb
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_MEDIA_ITEM_CHANGED,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_MEDIA_ITEM_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -504,11 +519,12 @@ napi_status NapiStreamPlayer::OffVolumeChanged(napi_env env, napi_value callback
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_VOLUME_CHANGED,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_VOLUME_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -521,11 +537,12 @@ napi_status NapiStreamPlayer::OffVideoSizeChanged(napi_env env, napi_value callb
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_VIDEO_SIZE_CHANGED,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_VIDEO_SIZE_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -538,11 +555,12 @@ napi_status NapiStreamPlayer::OffLoopModeChanged(napi_env env, napi_value callba
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_LOOP_MODE_CHANGED,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_LOOP_MODE_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -555,11 +573,12 @@ napi_status NapiStreamPlayer::OffPlaySpeedChanged(napi_env env, napi_value callb
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_PLAY_SPEED_CHANGED,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_PLAY_SPEED_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -572,11 +591,12 @@ napi_status NapiStreamPlayer::OffPlayerError(napi_env env, napi_value callback, 
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_PLAYER_ERROR,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_PLAYER_ERROR,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -589,11 +609,12 @@ napi_status NapiStreamPlayer::OffNextRequest(napi_env env, napi_value callback, 
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_NEXT_REQUEST,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_NEXT_REQUEST,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -606,11 +627,12 @@ napi_status NapiStreamPlayer::OffPreviousRequest(napi_env env, napi_value callba
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_PREVIOUS_REQUEST,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_PREVIOUS_REQUEST,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -623,11 +645,12 @@ napi_status NapiStreamPlayer::OffSeekDone(napi_env env, napi_value callback, Nap
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_SEEK_DONE,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_SEEK_DONE,
         callback) != napi_ok) {
         return napi_generic_failure;
     }
@@ -640,11 +663,12 @@ napi_status NapiStreamPlayer::OffEndOfStream(napi_env env, napi_value callback, 
         CLOGE("napiStreamPlayer is null");
         return napi_generic_failure;
     }
-    if (!napiStreamPlayer->NapiListenerGetter()) {
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
         CLOGE("napi stream player callback is null");
         return napi_generic_failure;
     }
-    if (napiStreamPlayer->NapiListenerGetter()->RemoveCallback(env, NapiStreamPlayerListener::EVENT_END_OF_STREAM,
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_END_OF_STREAM,
         callback) != napi_ok) {
         return napi_generic_failure;
     }

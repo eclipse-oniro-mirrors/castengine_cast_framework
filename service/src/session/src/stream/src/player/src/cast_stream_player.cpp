@@ -288,6 +288,11 @@ void CastStreamPlayerCallback::OnStateChanged(const PlayerStates playbackState, 
             player->NotifyPlayComplete();
         }
     }
+    if (playbackState != PlayerStates::PLAYER_STARTED) {
+        if (timer_ && !timer_->IsStopped()) {
+            timer_ ->Stop();
+        }
+    }
     auto listener = ListenerGetter();
     if (!listener) {
         CLOGE("StreamPlayerListener is null");
@@ -302,11 +307,6 @@ void CastStreamPlayerCallback::OnStateChanged(const PlayerStates playbackState, 
     }
     targetCallback->NotifyPeerPlayerStatusChanged(playbackState, isPlayWhenReady);
 
-    if (playbackState != PlayerStates::PLAYER_STARTED) {
-        if (timer_ && !timer_->IsStopped()) {
-            timer_ ->Stop();
-        }
-    }
     CLOGD("OnStateChanged out");
 }
 

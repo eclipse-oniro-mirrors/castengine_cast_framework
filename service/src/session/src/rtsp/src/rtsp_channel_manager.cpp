@@ -198,8 +198,7 @@ bool RtspChannelManager::SendData(const std::string &dataFrame)
     }
     CLOGD("SendData, encrypt data finish.");
 
-    CLOGD("SendData, encryptedDataLen %{public}d pktlen %{public}zu send buffer %{public}s.", encryptedDataLen,
-        pktlen, encryptedData.get());
+    CLOGD("SendData, encryptedDataLen %{public}d pktlen %{public}zu.", encryptedDataLen, pktlen);
     return channel->Send(encryptedData.get(), encryptedDataLen);
 }
 

@@ -768,6 +768,11 @@ bool CastStreamManagerClient::ProcessActionKeyRequest(const json &data)
         CLOGE("invalid buffer, requestSize = %{public}u", requestSize);
         return false;
     }
+    constexpr uint32_t MAX_KEY_REQUEST_SIZE = 64 * 1024; // 64KB, sufficient for DRM key requests
+    if (requestSize > MAX_KEY_REQUEST_SIZE) {
+        CLOGE("key request size %{public}u exceeds max limit %{public}u", requestSize, MAX_KEY_REQUEST_SIZE);
+        return false;
+    }
     std::vector<uint8_t> keyRequest(requestSize);
     for (uint32_t i = 0; i < requestSize; i++) {
         keyRequest[i] = static_cast<uint8_t>(keyRequestDataStr[i]);

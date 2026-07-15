@@ -19,6 +19,7 @@
 #ifndef DISCOVERY_MANAGER_H
 #define DISCOVERY_MANAGER_H
 
+#include <atomic>
 #include <map>
 #include <mutex>
 #include <string>
@@ -145,7 +146,7 @@ private:
     std::shared_ptr<DiscoveryEventHandler> eventHandler_;
     std::unordered_map<CastInnerRemoteDevice, int> remoteDeviceMap_;
     int32_t scanCount_;
-    bool hasStartDiscovery_ = false;
+    std::atomic<bool> hasStartDiscovery_{ false };
 };
 } // namespace CastEngineService
 } // namespace CastEngine
