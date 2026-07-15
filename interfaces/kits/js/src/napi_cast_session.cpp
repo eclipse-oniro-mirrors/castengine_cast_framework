@@ -237,7 +237,7 @@ napi_status NapiCastSession::OnInnerEvent(napi_env env, napi_value callback, Nap
         CLOGE("napiSession is null");
         return napi_generic_failure;
     }
-    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    auto napiListener = napiSession->NapiListenerGetter();
     if (!napiListener) {
         CLOGE("cast session manager callback is null");
         return napi_generic_failure;
@@ -255,7 +255,7 @@ napi_status NapiCastSession::OnDeviceState(napi_env env, napi_value callback, Na
         CLOGE("napiSession is null");
         return napi_generic_failure;
     }
-    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    auto napiListener = napiSession->NapiListenerGetter();
     if (!napiListener) {
         CLOGE("cast session manager callback is null");
         return napi_generic_failure;
@@ -273,7 +273,7 @@ napi_status NapiCastSession::OffInnerEvent(napi_env env, napi_value callback, Na
         CLOGE("napiSession is null");
         return napi_generic_failure;
     }
-    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    auto napiListener = napiSession->NapiListenerGetter();
     if (!napiListener) {
         CLOGE("cast session manager callback is null");
         return napi_generic_failure;
@@ -291,7 +291,7 @@ napi_status NapiCastSession::OffDeviceState(napi_env env, napi_value callback, N
         CLOGE("napiSession is null");
         return napi_generic_failure;
     }
-    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    auto napiListener = napiSession->NapiListenerGetter();
     if (!napiListener) {
         CLOGE("cast session manager callback is null");
         return napi_generic_failure;
