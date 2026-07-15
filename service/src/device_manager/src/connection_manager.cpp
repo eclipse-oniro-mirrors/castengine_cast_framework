@@ -163,7 +163,6 @@ static void OnShutdown(int32_t socket, ShutdownReason reason)
         return;
     }
     CLOGI("notify disconnect %{public}d", socket);
-    ConnectionManager::GetInstance().NotifyDisconnectAndSenceFail(__func__, *device, S5_OPEN_CONSULT_SESSION, reason);
 }
 
 static void OnBytes(int32_t socket, const void *data, uint32_t dataLen)
