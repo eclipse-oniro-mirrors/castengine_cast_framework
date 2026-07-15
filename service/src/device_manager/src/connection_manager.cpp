@@ -1321,8 +1321,7 @@ std::unique_ptr<CastInnerRemoteDevice> ConnectionManager::GetRemoteFromJsonData(
 int ConnectionManager::OpenSoftBusSocket(const std::optional<std::string> &networkId,
                                          const CastInnerRemoteDevice &device, int32_t &errorCode)
 {
-    // Only transortId > INVALID_ID does NOT meaning openSession successfully,
-    // result from OnOpenSession also count.
+    // Only transortId > INVALID_ID does NOT meaning openSession successfully,result from OnOpenSession also count.
     CLOGI("OpenSoftBusSocket in");
     constexpr int32_t attemptCountMax = 2;
     int socketId = INVALID_ID;
