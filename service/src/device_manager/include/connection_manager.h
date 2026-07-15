@@ -139,6 +139,7 @@ private:
     void RemoveTransIdMapping(int transportId);
     std::string GetPendingDeviceId(int socketId);
     void RemovePendingSocket(int socketId);
+    void SetPendingSocket(int socketId);
     int GetCastSessionId(int transportId);
 
     bool ParseAndCheckJsonData(const std::string &data, json &jsonData);
