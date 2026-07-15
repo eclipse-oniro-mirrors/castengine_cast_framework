@@ -1247,6 +1247,12 @@ void ConnectionManager::RemovePendingSocket(int socketId)
     pendingSocketMap_.erase(socketId);
 }
 
+void ConnectionManager::SetPendingSocket(int socketId)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    pendingSocketMap_[socketId] = socketId;
+}
+
 bool ConnectionManager::ParseAndCheckJsonData(const std::string &data, json &jsonData)
 {
     if (!json::accept(data)) {
@@ -1347,10 +1353,7 @@ int ConnectionManager::OpenSoftBusSocket(const std::optional<std::string> &netwo
 
         // Register pending socket before BindSocket so OnShutdown can find the device
         // during the window between BindSocket and SetDeviceTransId.
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-            pendingSocketMap_[socketId] = device.deviceId;
-        }
+        SetPendingSocket(device.deviceId);
         bindResult = SoftBus::BindSocket(socketId, protocolType_, isSingle, attemptCount);
         if (bindResult != SOFTBUS_OK) {
             CLOGE("Failed to bind socket, result %{public}d", bindResult);
