@@ -98,7 +98,7 @@ int ChannelManager::CreateChannel(ChannelRequest &request, std::shared_ptr<IChan
         CLOGV("CreateChannel In, StartConnection.");
         remoteCtrl = connection->StartConnection(request, channelListener);
     }
-    if (!remoteCtrl) {
+    if (remoteCtrl != -1) {
         std::lock_guard<std::mutex> lg(connectionMapMtx_);
         connectionMap_.insert(std::pair<ChannelRequest, std::shared_ptr<Connection>>(request, connection));
     }
@@ -134,7 +134,7 @@ int ChannelManager::CreateChannel(ChannelRequest &request, std::shared_ptr<IChan
         CLOGV("CreateChannel In, StartListen.");
         remoteCtrl = connection->StartListen(request, channelListener);
     }
-    if (!remoteCtrl) {
+    if (remoteCtrl != -1) {
         std::lock_guard<std::mutex> lg(connectionMapMtx_);
         connectionMap_.insert(std::pair<ChannelRequest, std::shared_ptr<Connection>>(request, connection));
     }
