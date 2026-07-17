@@ -635,11 +635,11 @@ void CastPublishDiscoveryCallback::OnPublishResult(int32_t publishId, int32_t pu
 
 void DiscoveryEventHandler::ProcessEvent(const InnerEvent::Pointer &event)
 {
+    DiscoveryManager::GetInstance().StopDmDiscovery();
     if (!DiscoveryManager::GetInstance().hasStartDiscovery_.load()) { 
         CLOGI("Discovery has been stopped, skip ProcessEvent"); 
         return; 
     }
-    DiscoveryManager::GetInstance().StopDmDiscovery();
     auto eventId = event->GetInnerEventId();
     switch (eventId) {
         case EVENT_START_DISCOVERY:
