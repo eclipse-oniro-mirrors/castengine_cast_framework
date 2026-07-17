@@ -303,7 +303,6 @@ void TcpConnection::CloseConnection()
     }
     if (remoteSocket_ != INVALID_SOCKET) {
         socket_.Shutdown(remoteSocket_);
-        ::close(remoteSocket_);
         remoteSocket_ = INVALID_SOCKET;
     }
     socket_.Close();

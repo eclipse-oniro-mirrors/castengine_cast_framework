@@ -505,13 +505,15 @@ int EncryptDecrypt::GetMediaEncryptCipher(const std::set<std::string> &cipherLis
 
 int EncryptDecrypt::GetControlEncryptCipher(const std::set<std::string> &cipherList)
 {
-    // Control channel requires authenticated encryption (GCM), CTR fallback is not allowed
-    // to prevent bit-flipping attacks on unauthenticated ciphertext
+    // GCM is preferred, followed by CTR
     if (cipherList.count(CIPHER_AES_GCM_128) != 0) {
         return GCM_CODE;
     }
-    CLOGE("Control channel requires AES-GCM, CTR is not accepted due to lack of integrity protection");
 
+    if (cipherList.count(CIPHER_AES_CTR_128) != 0) {
+        return CTR_CODE;
+    }
+    CLOGE("not support the cipherlist");
     return INVALID_CODE;
 }
 

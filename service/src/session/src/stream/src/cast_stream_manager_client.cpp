@@ -31,6 +31,7 @@ namespace CastEngineService {
 DEFINE_CAST_ENGINE_LABEL("Cast-Stream-Manager-Client");
 
 namespace {
+static constexpr size_t MAX_KEY_RESPONSE_SIZE = 2 * 1024 * 1024;
 void ProcessActionWriteWrap(const std::string& funcName)
 {
     HiSysEventWriteWrap(funcName, {
@@ -764,13 +765,8 @@ bool CastStreamManagerClient::ProcessActionKeyRequest(const json &data)
     std::string keyRequestDataStr;
     RETURN_FALSE_IF_PARSE_STRING_WRONG(keyRequestDataStr, data, KEY_REQUEST_KEY);
     uint32_t requestSize = static_cast<uint32_t>(keyRequestDataStr.length());
-    if (requestSize == 0) {
+    if ((requestSize == 0) || (requestSize > MAX_KEY_RESPONSE_SIZE)) {
         CLOGE("invalid buffer, requestSize = %{public}u", requestSize);
-        return false;
-    }
-    constexpr uint32_t MAX_KEY_REQUEST_SIZE = 64 * 1024; // 64KB, sufficient for DRM key requests
-    if (requestSize > MAX_KEY_REQUEST_SIZE) {
-        CLOGE("key request size %{public}u exceeds max limit %{public}u", requestSize, MAX_KEY_REQUEST_SIZE);
         return false;
     }
     std::vector<uint8_t> keyRequest(requestSize);

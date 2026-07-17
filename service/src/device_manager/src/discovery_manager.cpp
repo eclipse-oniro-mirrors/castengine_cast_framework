@@ -187,7 +187,7 @@ void DiscoveryManager::StartDiscovery(int protocols, std::vector<std::string> dr
         }
     }
     uid_ = IPCSkeleton::GetCallingUid();
-    hasStartDiscovery_ = true;
+    hasStartDiscovery_.store(true);
     eventHandler_->RemoveEvent(EVENT_START_DISCOVERY);
     eventHandler_->SendEvent(EVENT_START_DISCOVERY);
     CLOGI("StartDiscovery out");
@@ -196,7 +196,7 @@ void DiscoveryManager::StartDiscovery(int protocols, std::vector<std::string> dr
 void DiscoveryManager::StopDiscovery()
 {
     CLOGI("StopDiscovery in");
-    hasStartDiscovery_ = false;
+    hasStartDiscovery_.store(false);
     SetDeviceNotFresh();
     eventHandler_->RemoveAllEvents();
     if (eventRunner_ != nullptr) {
@@ -275,7 +275,6 @@ void DiscoveryManager::OnDeviceInfoFound(uint16_t subscribeId, const DmDeviceInf
             RemoveSameDeviceLocked(newDevice);
             isDeviceExist = false;
         }
-        remoteDeviceMap_[newDevice] = scanCount_;
     }
 
     if (!isDeviceExist) {
@@ -291,6 +290,8 @@ void DiscoveryManager::OnDeviceInfoFound(uint16_t subscribeId, const DmDeviceInf
         }
     }
 
+    std::lock_guard<std::mutex> lock(mutex_);
+    remoteDeviceMap_[newDevice] = scanCount_;
     RecordDeviceFoundType(dmDeviceInfo);
 }
 
@@ -539,7 +540,6 @@ void DiscoveryManager::RecordDeviceFoundType(const DmDeviceInfo dmDevice)
 {
     CLOGI("scanCount_ is %{public}d", scanCount_);
     std::string deviceId = dmDevice.deviceId;
-    std::lock_guard<std::mutex> lock(mutex_);
     if (reportTypeMap_.find(deviceId) == reportTypeMap_.end()) {
         reportTypeMap_.insert({ deviceId, {false, false} });
     }
