@@ -31,6 +31,7 @@ namespace CastEngineService {
 DEFINE_CAST_ENGINE_LABEL("Cast-Stream-Manager-Client");
 
 namespace {
+static constexpr size_t MAX_KEY_RESPONSE_SIZE = 2 * 1024 * 1024;
 void ProcessActionWriteWrap(const std::string& funcName)
 {
     HiSysEventWriteWrap(funcName, {
