@@ -509,7 +509,6 @@ int EncryptDecrypt::GetControlEncryptCipher(const std::set<std::string> &cipherL
     if (cipherList.count(CIPHER_AES_GCM_128) != 0) {
         return GCM_CODE;
     }
-    CLOGE("Control channel requires AES-GCM, CTR is not accepted due to lack of integrity protection");
 
     if (cipherList.count(CIPHER_AES_CTR_128) != 0) {
         return CTR_CODE;
