@@ -649,7 +649,12 @@ void CastSessionManagerService::AddClientDeathRecipientLocked(pid_t pid, uid_t u
         CLOGE("Alloc death recipient filed");
         return;
     }
-    if (!listener->AsObject()->AddDeathRecipient(deathRecipient)) {
+    auto obj = listener->AsObject();
+    if (!obj) {
+        CLOGE("listener->AsObject() is nullptr");
+        return;
+    }
+    if (!obj->AddDeathRecipient(deathRecipient)) {
         CLOGE("Add cast client death recipient failed");
         return;
     }
@@ -661,7 +666,10 @@ void CastSessionManagerService::RemoveClientDeathRecipientLocked(pid_t pid, sptr
 {
     auto it = deathRecipientMap_.find(pid);
     if (it != deathRecipientMap_.end()) {
-        listener->AsObject()->RemoveDeathRecipient(it->second);
+        auto obj = listener->AsObject();
+        if (!obj) {
+            obj->RemoveDeathRecipient(it->second);
+        }
         deathRecipientMap_.erase(it);
         CLOGD("remove death recipient pid:%d", pid);
     }

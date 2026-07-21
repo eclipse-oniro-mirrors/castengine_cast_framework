@@ -286,7 +286,7 @@ void CastSessionImpl::RtspListenerImpl::NotifyModuleCustomParamsNegotiation(cons
         return;
     }
 
-    if (session->property_.endType == EndType::CAST_SOURCE) {
+    if ((session->property_.endType == EndType::CAST_SOURCE) && session->rtspControl_ && session->streamManager_) {
         session->rtspControl_->ModuleCustomParamsNegotiationDone();
         session->rtspControl_->SetNegotiatedStreamCapability(controllerParams);
         std::string negotiationParams = session->streamManager_->HandleCustomNegotiationParams(controllerParams);
@@ -368,7 +368,9 @@ void CastSessionImpl::ChannelManagerListenerImpl::OnChannelCreated(std::shared_p
             session->SendCastMessage(Message(MessageId::MSG_SETUP_SUCCESS, MODULE_ID_RC, remoteDeviceId));
             break;
         case ModuleType::RTSP:
-            session->rtspControl_->AddChannel(channel, deviceInfo->remoteDevice);
+            if (session->rtspControl_) {
+                session->rtspControl_->AddChannel(channel, deviceInfo->remoteDevice);
+            }
 
             RTSPWriteWrap(__func__, session->property_.protocolType, sessionID);
 
@@ -423,7 +425,9 @@ void CastSessionImpl::ChannelManagerListenerImpl::OnChannelRemoved(std::shared_p
     ModuleType moduleType = channel->GetRequest().moduleType;
     switch (moduleType) {
         case ModuleType::RTSP:
-            session->rtspControl_->RemoveChannel(channel);
+            if (session->rtspControl_) {
+                session->rtspControl_->RemoveChannel(channel);
+            }
             break;
         case ModuleType::STREAM:
             if (streamManager) {

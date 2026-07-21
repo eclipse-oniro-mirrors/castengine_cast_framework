@@ -68,7 +68,7 @@ void CastSessionListenerImplProxy::OnRemoteCtrlEvent(int eventType, const uint8_
 {
     MessageParcel parcelData;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
     CLOGE("OnRemoteCtrlEvent in eventType:%{public}d len:%{public}u", eventType, len);
     if (len > parcelData.GetDataCapacity()) {
         CLOGD("OnBytesReceived SetDataCapacity totalSize: %u", len);
