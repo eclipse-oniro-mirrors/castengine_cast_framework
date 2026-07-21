@@ -140,9 +140,9 @@ void CastSessionImpl::SetServiceCallbackForRelease(const std::function<void(int)
 int32_t CastSessionImpl::RegisterListener(sptr<ICastSessionListenerImpl> listener)
 {
     CLOGD("Start to register session listener");
-    if (!listener) {                                                                                                                              
-        CLOGE("Listener is null");                                                                                                                
-        return CAST_ENGINE_ERROR;                                                                                                                 
+    if (!listener) {
+        CLOGE("Listener is null");
+        return CAST_ENGINE_ERROR;
     } 
     std::unique_lock<std::mutex> lock(mutex_);
     listeners_[IPCSkeleton::GetCallingPid()] = listener;
@@ -571,9 +571,9 @@ void CastSessionImpl::SetLocalDevice(const CastLocalDevice &localDevice)
 
 bool CastSessionImpl::TransferTo(std::shared_ptr<BaseState> state)
 {
-    if (!state) {                                                                                                                                                 
-        CLOGE("TransferTo state is null");                                                                                                                        
-        return false;                                                                                                                                             
+    if (!state) {
+        CLOGE("TransferTo state is null");
+        return false;
     }
     if (IsAllowTransferState(state->GetStateId())) {
         CLOGI("Transfer to %{public}s", SESSION_STATE_STRING[static_cast<int>(state->GetStateId())].c_str());

@@ -104,11 +104,11 @@ void RtspChannelManager::RemoveChannel(std::shared_ptr<Channel> channel)
 
 bool RtspChannelManager::StartSession(const uint8_t *sessionKey, uint32_t sessionKeyLength)
 {
-    if (sessionKey != nullptr && sessionKeyLength != 0) {                                                            
+    if (sessionKey != nullptr && sessionKeyLength != 0) {
         if (memcpy_s(sessionKeys_, sessionKeyLength, sessionKey, sessionKeyLength) != 0) {
             CLOGE("SessionKey Copy Error!");
-            return falsel
-        }                                                                                                                                       
+            return false;
+        }
     }
     isSessionActive_ = true;
     sessionKeyLength_ = sessionKeyLength;

@@ -88,7 +88,7 @@ bool RtspController::Start(const ParamInfo &sourceParam, const uint8_t *sessionK
 {
     this->paramInfo_ = sourceParam;
     negotiatedParamInfo_ = this->paramInfo_;
-    if(!rtspNetManager_->StartSession(sessionKey, sessionKeyLength)) {
+    if (!rtspNetManager_->StartSession(sessionKey, sessionKeyLength)) {
         CLOGE("StartSession failed");
         return false;
     }
