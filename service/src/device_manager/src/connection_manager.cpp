@@ -168,6 +168,10 @@ static void OnShutdown(int32_t socket, ShutdownReason reason)
 static void OnBytes(int32_t socket, const void *data, uint32_t dataLen)
 {
     CLOGI("OnBytes, socket id = %{public}d", socket);
+    if (data == nullptr || dataLen == 0) {                                                                                                                       
+        CLOGE("Invalid data from softbus, data is null or dataLen is zero");                                                                                     
+        return;                                                                                                                                                  
+    }
     ConnectionManager::GetInstance().OnConsultDataReceivedFromSink(socket, data, dataLen);
 }
 
