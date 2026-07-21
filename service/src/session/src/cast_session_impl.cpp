@@ -143,7 +143,7 @@ int32_t CastSessionImpl::RegisterListener(sptr<ICastSessionListenerImpl> listene
     if (!listener) {
         CLOGE("Listener is null");
         return CAST_ENGINE_ERROR;
-    } 
+    }
     std::unique_lock<std::mutex> lock(mutex_);
     listeners_[IPCSkeleton::GetCallingPid()] = listener;
     cond_.notify_all();
@@ -335,9 +335,7 @@ int32_t CastSessionImpl::RemoveDeviceInner(const std::string &deviceId)
         dlnaDeviceId_ != static_cast<uint32_t>(INVALID_ID)) && streamPlayer_) {
         streamPlayer_->Stop();
         for (const auto &[pid, listener] : listeners_) {
-            if (listener) {
-                listener->OnDeviceState(DeviceStateInfo { DeviceState::DISCONNECTED, deviceId});
-            }
+            listener->OnDeviceState(DeviceStateInfo { DeviceState::DISCONNECTED, deviceId});
         }
     }
 
