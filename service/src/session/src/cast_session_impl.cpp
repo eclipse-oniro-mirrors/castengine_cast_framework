@@ -729,6 +729,11 @@ int CastSessionImpl::ProcessConnect(const Message &msg)
         property_.protocolType, sceneType, GetAnonymousDeviceID(remote.deviceId));
 
     int deviceSessionId = channelManager_->CreateChannel(*request, rtspControl_->GetChannelListener());
+    if (deviceSessionId == INVALID_PORT) {
+        CLOGE("create channel failed");
+        rtspControl_->Action(ActionType::TEARDOWN);
+        return -1;
+    }
     UpdateRemoteDeviceSessionId(remote.deviceId, deviceSessionId);
     ConnectionManager::GetInstance().SetRTSPPort(deviceSessionId);
     remote.rtspPort = deviceSessionId;
@@ -1001,7 +1006,7 @@ bool CastSessionImpl::ProcessStateEvent(MessageId msgId, const Message &msg)
     return (this->*stateProcessor_[msgId])(msg);
 }
 
-bool CheckJsonMemberType(Json::Value rootValue)
+bool CheckJsonMemberType(const Json::Value &rootValue)
 {
     if (!rootValue.isMember(KEY_BUNDLE_NAME) || !rootValue[KEY_BUNDLE_NAME].isString()) {
         CLOGE("parse bundle name failed");

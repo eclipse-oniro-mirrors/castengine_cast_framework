@@ -39,7 +39,7 @@ public:
     void OnError(const std::string &errorCode);
     void OnClosed(const std::string &errorCode);
 
-    void StartSession(const uint8_t *sessionKey, uint32_t sessionKeyLength);
+    bool StartSession(const uint8_t *sessionKey, uint32_t sessionKeyLength);
     void StopSession();
 
     void AddChannel(std::shared_ptr<Channel> channel, const CastInnerRemoteDevice &device);
