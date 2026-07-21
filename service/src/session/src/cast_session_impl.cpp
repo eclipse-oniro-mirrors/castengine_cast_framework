@@ -140,6 +140,10 @@ void CastSessionImpl::SetServiceCallbackForRelease(const std::function<void(int)
 int32_t CastSessionImpl::RegisterListener(sptr<ICastSessionListenerImpl> listener)
 {
     CLOGD("Start to register session listener");
+    if (!listener) {                                                                                                                              
+        CLOGE("Listener is null");                                                                                                                
+        return CAST_ENGINE_ERROR;                                                                                                                 
+    } 
     std::unique_lock<std::mutex> lock(mutex_);
     listeners_[IPCSkeleton::GetCallingPid()] = listener;
     cond_.notify_all();
@@ -331,7 +335,9 @@ int32_t CastSessionImpl::RemoveDeviceInner(const std::string &deviceId)
         dlnaDeviceId_ != static_cast<uint32_t>(INVALID_ID)) && streamPlayer_) {
         streamPlayer_->Stop();
         for (const auto &[pid, listener] : listeners_) {
-            listener->OnDeviceState(DeviceStateInfo { DeviceState::DISCONNECTED, deviceId});
+            if (listener) {
+                listener->OnDeviceState(DeviceStateInfo { DeviceState::DISCONNECTED, deviceId});
+            }
         }
     }
 
@@ -565,6 +571,10 @@ void CastSessionImpl::SetLocalDevice(const CastLocalDevice &localDevice)
 
 bool CastSessionImpl::TransferTo(std::shared_ptr<BaseState> state)
 {
+    if (!state) {                                                                                                                                                 
+        CLOGE("TransferTo state is null");                                                                                                                        
+        return false;                                                                                                                                             
+    }
     if (IsAllowTransferState(state->GetStateId())) {
         CLOGI("Transfer to %{public}s", SESSION_STATE_STRING[static_cast<int>(state->GetStateId())].c_str());
         TransferState(state);
@@ -1173,7 +1183,9 @@ void CastSessionImpl::ChangeDeviceStateInner(DeviceState state, const std::strin
     }
     UpdateRemoteDeviceStateLocked(deviceId, state);
     for (const auto &[pid, listener] : listeners_) {
-        listener->OnDeviceState(DeviceStateInfo{ state, deviceId, static_cast<ReasonCode>(reasonCode) });
+        if (listener) {
+            listener->OnDeviceState(DeviceStateInfo{ state, deviceId, static_cast<ReasonCode>(reasonCode) });
+        }
     }
 }
 
@@ -1187,7 +1199,9 @@ void CastSessionImpl::OnEvent(EventId eventId, const std::string &data)
     }
 
     for (const auto &[pid, listener] : listeners_) {
-        listener->OnEvent(eventId, data);
+        if (listener) {
+            listener->OnEvent(eventId, data);
+        }
     }
 }
 
@@ -1359,8 +1373,14 @@ int32_t CastSessionImpl::SetCastMode(CastMode mode, std::string &jsonParam)
 void CastSessionImpl::OnEventInner(sptr<CastSessionImpl> session, EventId eventId, const std::string &jsonParam)
 {
     std::unique_lock<std::mutex> lock(mutex_);
+    if (!session) {
+        CLOGE("session is nullptr");
+        return;
+    }
     for (const auto &[pid, listener] : session->listeners_) {
-        listener->OnEvent(eventId, jsonParam);
+        if (listener) {
+            listener->OnEvent(eventId, jsonParam);
+        }
     }
 }
 
@@ -1368,7 +1388,9 @@ void CastSessionImpl::OnRemoteCtrlEvent(int eventType, const uint8_t *data, uint
 {
     std::unique_lock<std::mutex> lock(mutex_);
     for (const auto &[pid, listener] : listeners_) {
-        listener->OnRemoteCtrlEvent(eventType, data, len);
+        if (listener) {
+            listener->OnRemoteCtrlEvent(eventType, data, len);
+        }
     }
 }
 
