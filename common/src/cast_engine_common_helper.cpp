@@ -569,11 +569,23 @@ bool WriteRemoteControlEvent(Parcel &parcel, const OHRemoteControlEvent &event)
 
 const OHNativeXcomponentTouchPoint ReadTouchPoint(Parcel &parcel)
 {
-    return { parcel.ReadInt32(),  parcel.ReadFloat(),
-        parcel.ReadFloat(),  parcel.ReadFloat(),
-        parcel.ReadFloat(),  static_cast<OHNativeXcomponentTouchEventType>(parcel.ReadUint32()),
-        parcel.ReadDouble(), parcel.ReadFloat(),
-        parcel.ReadInt64(),  parcel.ReadBool() };
+    auto id = parcel.ReadInt32();
+    auto screenX = parcel.ReadFloat();
+    auto screenY = parcel.ReadFloat();
+    auto x = parcel.ReadFloat();
+    auto y = parcel.ReadFloat();  
+    auto type = parcel.ReadUint32();
+    if (type < static_cast<int32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_DOWN) ||
+        type > static_cast<int32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_PULL_IN_WINDOW)) {
+        CLOGE("Invalid virtual key event type: %{public}d", type);
+        type = static_cast<int32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_DOWN);
+    }
+    auto size = parcel.ReadDouble();
+    auto force = parcel.ReadFloat();
+    auto timeStamp = parcel.ReadInt64();  
+    auto isPressed = parcel.ReadBool();
+    return { id, screenX, screenY, x, y, static_cast<OHNativeXcomponentTouchEventType>(type),
+        size, force, timeStamp, isPressed };
 }
 
 void ReadTouchPoints(Parcel &parcel, uint32_t numPoints, OHNativeXcomponentTouchPoint points[])
