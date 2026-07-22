@@ -49,11 +49,12 @@ int32_t CastSessionImplProxy::RegisterListener(sptr<ICastSessionListenerImpl> li
         CLOGE("Failed to write cast session listener");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(REGISTER_LISTENER, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(REGISTER_LISTENER, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when registering listener");
         return CAST_ENGINE_ERROR;
     }
@@ -70,11 +71,12 @@ int32_t CastSessionImplProxy::UnregisterListener()
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(UNREGISTER_LISTENER, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(UNREGISTER_LISTENER, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when unregistering listener");
         return CAST_ENGINE_ERROR;
     }
@@ -96,11 +98,12 @@ int32_t CastSessionImplProxy::AddDevice(const CastRemoteDevice &remoteDevice)
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(ADD_DEVICE, data, reply, option);
+    int32_t ret = remote->SendRequest(ADD_DEVICE, data, reply, option);
     if (ret == ERR_UNKNOWN_TRANSACTION) {
         CLOGE("No permission when adding device");
         return ERR_NO_PERMISSION;
@@ -129,11 +132,12 @@ int32_t CastSessionImplProxy::RemoveDevice(const std::string &deviceId)
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(REMOVE_DEVICE, data, reply, option);
+    int32_t ret = remote->SendRequest(REMOVE_DEVICE, data, reply, option);
     if (ret == ERR_UNKNOWN_TRANSACTION) {
         CLOGE("No permission when removing device");
         return ERR_NO_PERMISSION;
@@ -162,11 +166,12 @@ int32_t CastSessionImplProxy::StartAuth(const AuthInfo &authInfo)
         return false;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(START_AUTH, data, reply, option);
+    int32_t ret = remote->SendRequest(START_AUTH, data, reply, option);
     if (ret == ERR_UNKNOWN_TRANSACTION) {
         CLOGE("No permission when starting auth");
         return ERR_NO_PERMISSION;
@@ -192,11 +197,12 @@ int32_t CastSessionImplProxy::Release()
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(RELEASE, data, reply, option);
+    int32_t ret = remote->SendRequest(RELEASE, data, reply, option);
     if (ret == ERR_UNKNOWN_TRANSACTION) {
         CLOGE("No permission when releasing the cast session");
         return ERR_NO_PERMISSION;
@@ -219,11 +225,12 @@ int32_t CastSessionImplProxy::GetSessionId(std::string &sessionId)
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(GET_SESSION_ID, data, reply, option);
+    int32_t ret = remote->SendRequest(GET_SESSION_ID, data, reply, option);
     if (ret == ERR_UNKNOWN_TRANSACTION) {
         CLOGE("No permission when getting session id");
         return ERR_NO_PERMISSION;
@@ -254,11 +261,12 @@ int32_t CastSessionImplProxy::GetDeviceState(const std::string &deviceId, Device
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(GET_DEVICE_STATE, data, reply, option);
+    int32_t ret = remote->SendRequest(GET_DEVICE_STATE, data, reply, option);
     if (ret == ERR_UNKNOWN_TRANSACTION) {
         CLOGE("No permission when getting device state");
         return ERR_NO_PERMISSION;
@@ -295,11 +303,12 @@ int32_t CastSessionImplProxy::GetRemoteDeviceInfo(std::string deviceId, CastRemo
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(GET_REMOTE_DEVICE_INFO, data, reply, option);
+    int32_t ret = remote->SendRequest(GET_REMOTE_DEVICE_INFO, data, reply, option);
     if (ret == ERR_NO_PERMISSION) {
         CLOGE("No permission when getting remote device");
         return ERR_NO_PERMISSION;
@@ -335,11 +344,12 @@ int32_t CastSessionImplProxy::SetSessionProperty(const CastSessionProperty &prop
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(SET_SESSION_PROPERTY, data, reply, option);
+    int32_t ret = remote->SendRequest(SET_SESSION_PROPERTY, data, reply, option);
     if (ret == ERR_UNKNOWN_TRANSACTION) {
         CLOGE("No permission when setting session property");
         return ERR_NO_PERMISSION;
@@ -368,11 +378,12 @@ int32_t CastSessionImplProxy::SetCastMode(CastMode mode, std::string &jsonParam)
         CLOGE("Failed to write json param");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(SET_CAST_MODE, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(SET_CAST_MODE, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when set cast mode");
         return CAST_ENGINE_ERROR;
     }
@@ -391,11 +402,12 @@ int32_t CastSessionImplProxy::CreateMirrorPlayer(sptr<IMirrorPlayerImpl> &mirror
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(CREATE_MIRROR_PLAYER, data, reply, option);
+    int32_t ret = remote->SendRequest(CREATE_MIRROR_PLAYER, data, reply, option);
     if (ret == ERR_UNKNOWN_TRANSACTION) {
         CLOGE("No permission when creating mirror player");
         return ERR_NO_PERMISSION;
@@ -427,11 +439,12 @@ int32_t CastSessionImplProxy::CreateStreamPlayer(sptr<IStreamPlayerIpc> &streamP
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(CREAT_STREAM_PLAYER, data, reply, option);
+    int32_t ret = remote->SendRequest(CREAT_STREAM_PLAYER, data, reply, option);
     if (ret == ERR_UNKNOWN_TRANSACTION) {
         CLOGE("No permission when creating stream player");
         return ERR_NO_PERMISSION;
@@ -469,11 +482,12 @@ int32_t CastSessionImplProxy::NotifyEvent(EventId eventId, std::string &jsonPara
         CLOGE("Failed to write json param");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(NOTIFY_EVENT, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(NOTIFY_EVENT, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when notify event");
         return CAST_ENGINE_ERROR;
     }
