@@ -667,7 +667,7 @@ void CastSessionManagerService::RemoveClientDeathRecipientLocked(pid_t pid, sptr
     auto it = deathRecipientMap_.find(pid);
     if (it != deathRecipientMap_.end()) {
         auto obj = listener->AsObject();
-        if (!obj) {
+        if (obj) {
             obj->RemoveDeathRecipient(it->second);
         }
         deathRecipientMap_.erase(it);

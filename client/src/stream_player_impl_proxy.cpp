@@ -45,11 +45,12 @@ int32_t StreamPlayerImplProxy::RegisterListener(sptr<IStreamPlayerListenerImpl> 
         CLOGE("Failed to write stream player listener");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(REGISTER_LISTENER, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(REGISTER_LISTENER, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when registering listener");
         return CAST_ENGINE_ERROR;
     }
@@ -67,11 +68,12 @@ int32_t StreamPlayerImplProxy::UnregisterListener()
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(UNREGISTER_LISTENER, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(UNREGISTER_LISTENER, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when unregistering listener");
         return CAST_ENGINE_ERROR;
     }
@@ -94,11 +96,12 @@ int32_t StreamPlayerImplProxy::SetSurface(sptr<IBufferProducer> producer)
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(SET_SURFACE, data, reply, option);
+    int32_t ret = remote->SendRequest(SET_SURFACE, data, reply, option);
     if (ret == ERR_INVALID_DATA) {
         CLOGE("Invalid parameter when setting surface");
         return ERR_INVALID_PARAM;
@@ -125,11 +128,12 @@ int32_t StreamPlayerImplProxy::Load(const MediaInfo &mediaInfo)
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(LOAD, data, reply, option);
+    int32_t ret = remote->SendRequest(LOAD, data, reply, option);
     if (ret == ERR_INVALID_DATA) {
         CLOGE("Invalid parameter when load");
         return ERR_INVALID_PARAM;
@@ -156,11 +160,12 @@ int32_t StreamPlayerImplProxy::Play(const MediaInfo &mediaInfo)
         return CAST_ENGINE_ERROR;
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    int32_t ret = Remote()->SendRequest(START, data, reply, option);
+    int32_t ret = remote->SendRequest(START, data, reply, option);
     if (ret == ERR_INVALID_DATA) {
         CLOGE("Invalid parameter when play");
         return ERR_INVALID_PARAM;
@@ -186,11 +191,12 @@ int32_t StreamPlayerImplProxy::Play(int index)
         CLOGE("Failed to write the index");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(PLAY_INDEX, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(PLAY_INDEX, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when play");
         return CAST_ENGINE_ERROR;
     }
@@ -208,11 +214,12 @@ int32_t StreamPlayerImplProxy::Pause()
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(PAUSE, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(PAUSE, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when pause");
         return CAST_ENGINE_ERROR;
     }
@@ -230,11 +237,12 @@ int32_t StreamPlayerImplProxy::Play()
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(PLAY, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(PLAY, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when resume");
         return CAST_ENGINE_ERROR;
     }
@@ -252,11 +260,12 @@ int32_t StreamPlayerImplProxy::Stop()
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(STOP, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(STOP, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when stop");
         return CAST_ENGINE_ERROR;
     }
@@ -274,11 +283,12 @@ int32_t StreamPlayerImplProxy::Next()
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(NEXT, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(NEXT, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when stop");
         return CAST_ENGINE_ERROR;
     }
@@ -296,11 +306,12 @@ int32_t StreamPlayerImplProxy::Previous()
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(PREVIOUS, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(PREVIOUS, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when stop");
         return CAST_ENGINE_ERROR;
     }
@@ -322,11 +333,12 @@ int32_t StreamPlayerImplProxy::Seek(int position)
         CLOGE("Failed to write the position");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(SEEK, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(SEEK, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when seek");
         return CAST_ENGINE_ERROR;
     }
@@ -348,11 +360,12 @@ int32_t StreamPlayerImplProxy::FastForward(int delta)
         CLOGE("Failed to write the delta");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(FAST_FORWARD, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(FAST_FORWARD, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when fastForward");
         return CAST_ENGINE_ERROR;
     }
@@ -374,11 +387,12 @@ int32_t StreamPlayerImplProxy::FastRewind(int delta)
         CLOGE("Failed to write the delta");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(FAST_REWIND, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(FAST_REWIND, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when fastRewind");
         return CAST_ENGINE_ERROR;
     }
@@ -400,11 +414,12 @@ int32_t StreamPlayerImplProxy::SetVolume(int volume)
         CLOGE("Failed to write the volume");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(SET_VOLUME, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(SET_VOLUME, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when set volume");
         return CAST_ENGINE_ERROR;
     }
@@ -426,11 +441,12 @@ int32_t StreamPlayerImplProxy::SetMute(bool mute)
         CLOGE("Failed to write the mute");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(SET_MUTE, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(SET_MUTE, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when set mute");
         return CAST_ENGINE_ERROR;
     }
@@ -452,11 +468,12 @@ int32_t StreamPlayerImplProxy::SetLoopMode(const LoopMode mode)
         CLOGE("Failed to write the mode");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(SET_LOOP_MODE, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(SET_LOOP_MODE, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when set volume");
         return CAST_ENGINE_ERROR;
     }
@@ -478,11 +495,12 @@ int32_t StreamPlayerImplProxy::SetAvailableCapability(const StreamCapability &st
         CLOGE("Failed to write the modeScope");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(SET_AVAILABLE_CAPABILITY, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(SET_AVAILABLE_CAPABILITY, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when set available capability");
         return CAST_ENGINE_ERROR;
     }
@@ -504,11 +522,12 @@ int32_t StreamPlayerImplProxy::SetSpeed(const PlaybackSpeed speed)
         CLOGE("Failed to write the position");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(SET_SPEED, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(SET_SPEED, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when set volume");
         return CAST_ENGINE_ERROR;
     }
@@ -527,11 +546,12 @@ int32_t StreamPlayerImplProxy::GetPlayerStatus(PlayerStates &playerStates)
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(GET_PLAYER_STATUS, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(GET_PLAYER_STATUS, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when get player status");
         return CAST_ENGINE_ERROR;
     }
@@ -553,11 +573,12 @@ int32_t StreamPlayerImplProxy::GetPosition(int &position)
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(GET_POSITION, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(GET_POSITION, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when get position");
         return CAST_ENGINE_ERROR;
     }
@@ -579,11 +600,12 @@ int32_t StreamPlayerImplProxy::GetDuration(int &duration)
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(GET_DURATION, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(GET_DURATION, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when get duration");
         return CAST_ENGINE_ERROR;
     }
@@ -605,11 +627,12 @@ int32_t StreamPlayerImplProxy::GetVolume(int &volume, int &maxVolume)
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(GET_VOLUME, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(GET_VOLUME, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when get duration");
         return CAST_ENGINE_ERROR;
     }
@@ -632,11 +655,12 @@ int32_t StreamPlayerImplProxy::GetMute(bool &mute)
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(GET_MUTE, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(GET_MUTE, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when query is mute");
         return CAST_ENGINE_ERROR;
     }
@@ -659,11 +683,12 @@ int32_t StreamPlayerImplProxy::GetLoopMode(LoopMode &loopMode)
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(GET_LOOP_MODE, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(GET_LOOP_MODE, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when get duration");
         return CAST_ENGINE_ERROR;
     }
@@ -685,11 +710,12 @@ int32_t StreamPlayerImplProxy::GetAvailableCapability(StreamCapability &streamCa
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(GET_AVAILABLE_CAPABILITY, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(GET_AVAILABLE_CAPABILITY, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when get available capability");
         return CAST_ENGINE_ERROR;
     }
@@ -712,11 +738,12 @@ int32_t StreamPlayerImplProxy::GetPlaySpeed(PlaybackSpeed &playbackSpeed)
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(GET_PLAY_SPEED, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(GET_PLAY_SPEED, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when get duration");
         return CAST_ENGINE_ERROR;
     }
@@ -738,11 +765,12 @@ int32_t StreamPlayerImplProxy::GetMediaInfoHolder(MediaInfoHolder &mediaInfoHold
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(GET_MEDIA_INFO_HOLDER, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(GET_MEDIA_INFO_HOLDER, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when get duration");
         return CAST_ENGINE_ERROR;
     }
@@ -798,11 +826,12 @@ int32_t StreamPlayerImplProxy::ProvideKeyResponse(const std::string &mediaId, co
         }
     }
 
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(PROVIDE_KEY_RESPONSE, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(PROVIDE_KEY_RESPONSE, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when provide key response");
         return CAST_ENGINE_ERROR;
     }
@@ -822,11 +851,12 @@ int32_t StreamPlayerImplProxy::Release()
         CLOGE("Failed to write the interface token");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote() == nullptr) {
+    auto remote = Remote();
+    if (remote == nullptr) {
         CLOGE("Remote() is null");
         return CAST_ENGINE_ERROR;
     }
-    if (Remote()->SendRequest(RELEASE, data, reply, option) != ERR_NONE) {
+    if (remote->SendRequest(RELEASE, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when Releasing stream player");
         return CAST_ENGINE_ERROR;
     }
