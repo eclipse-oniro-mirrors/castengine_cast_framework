@@ -605,18 +605,39 @@ void ReadTouchEvent(Parcel &parcel, OHNativeXcomponentTouchEvent &touchEvent)
 
 const OHNativeXcomponentMouseEvent ReadMouseEvent(Parcel &parcel)
 {
-    return { parcel.ReadFloat(),
-        parcel.ReadFloat(),
-        parcel.ReadFloat(),
-        parcel.ReadFloat(),
-        parcel.ReadInt64(),
-        static_cast<OHNativeXcomponentMouseEventAction>(parcel.ReadUint32()),
-        static_cast<OHNativeXcomponentMouseEventButton>(parcel.ReadUint32()) };
+    auto x = parcel.ReadFloat();
+    auto y = parcel.ReadFloat();
+    auto screenX = parcel.ReadFloat();
+    auto screenY = parcel.ReadFloat();
+    auto timestamp = parcel.ReadInt64();
+    int32_t action = parcel.ReadUint32();
+    if (action < static_cast<int32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_PRESS) ||
+        action > static_cast<int32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_PULL_IN_WINDOW)) {
+        CLOGE("Invalid virtual key event type: %{public}d", action);
+        action = static_cast<int32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_PRESS);
+    }
+
+    int32_t button = parcel.ReadUint32();
+    if (button < static_cast<int32_t>(OHNativeXcomponentMouseEventButton::OH_NATIVEXCOMPONENT_LEFT_BUTTON) ||
+        button > static_cast<int32_t>(OHNativeXcomponentMouseEventButton::OH_NATIVEXCOMPONENT_RIGHT_BUTTON)) {
+        CLOGE("Invalid virtual key event type: %{public}d", button);
+        button = static_cast<int32_t>(OHNativeXcomponentMouseEventButton::OH_NATIVEXCOMPONENT_LEFT_BUTTON);
+    }
+
+    return { x, y, screenX, screenY, timestamp,
+        static_cast<OHNativeXcomponentMouseEventAction>(action),
+        static_cast<OHNativeXcomponentMouseEventButton>(button) };
 }
 
 const OHNativeXcomponentWheelEvent ReadWhellEvent(Parcel &parcel)
 {
-    return { static_cast<OHNativeXcomponentWheelEventDirection>(parcel.ReadUint32()),
+    int32_t typeValue = parcel.ReadInt32();
+    if (typeValue < static_cast<int32_t>(OHNativeXcomponentWheelEventDirection::OH_NATIVEXCOMPONENT_WHEEL_VERTICAL) ||
+        typeValue > static_cast<int32_t>(OHNativeXcomponentWheelEventDirection::OH_NATIVEXCOMPONENT_WHEEL_HORIZONTAL)) {
+        CLOGE("Invalid virtual key event type: %{public}d", typeValue);
+        typeValue = static_cast<int32_t>(OHNativeXcomponentWheelEventDirection::OH_NATIVEXCOMPONENT_WHEEL_VERTICAL);
+    }
+    return { static_cast<OHNativeXcomponentWheelEventDirection>(typeValue),
         parcel.ReadUint8(),
         parcel.ReadUint8(),
         parcel.ReadUint16(),
@@ -633,8 +654,12 @@ const OHNativeXcomponentKeyEvent ReadKeyEvent(Parcel &parcel)
 void ReadContentEvent(Parcel &parcel, OHNativeXcomponentContentEvent &contentEvent)
 {
     contentEvent.msgLen = parcel.ReadUint16();
-    int32_t err = memcpy_s(contentEvent.inputText,
-        OH_MAX_CONTENT_LEN, parcel.ReadBuffer(contentEvent.msgLen), contentEvent.msgLen);
+    const uint8_t *buf = parcel.ReadBuffer(contentEvent.msgLen);
+    if (buf == nullptr || contentEvent.msgLen > OH_MAX_CONTENT_LEN) {
+        CLOGE("Failed to read data.");
+        return;
+    }
+    int32_t err = memcpy_s(contentEvent.inputText, OH_MAX_CONTENT_LEN, buf, contentEvent.msgLen);
     if (err != 0) {
         CLOGE("memcpy_s inputText failed, err = %{public}d.", err);
     }
@@ -657,7 +682,13 @@ void ReadInputMethodEvent(Parcel &parcel, OHNativeXcomponentInputMethodEvent &in
 
 const OHNativeXcomponentVirtualKeyEvent ReadVirtualKeyEvent(Parcel &parcel)
 {
-    return { static_cast<OHNativeXcomponentVirtualKeyEventType>(parcel.ReadInt32()), parcel.ReadFloat(),
+    int32_t typeValue = parcel.ReadInt32();
+    if (typeValue < static_cast<int32_t>(OHNativeXcomponentVirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_BACK) ||
+        typeValue > static_cast<int32_t>(OHNativeXcomponentVirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_QUICK_SETTING)) {
+        CLOGE("Invalid virtual key event type: %{public}d", typeValue);
+        typeValue = static_cast<int32_t>(OHNativeXcomponentVirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_BACK);
+    }
+    return { static_cast<OHNativeXcomponentVirtualKeyEventType>(typeValue), parcel.ReadFloat(),
         parcel.ReadFloat() };
 }
 
@@ -763,33 +794,6 @@ void SetDataCapacity(MessageParcel &parcel, const FileFdMap &fileList, uint32_t 
     }
 }
 
-bool WriteFileList(MessageParcel &parcel, const FileFdMap &fileList)
-{
-    bool ret = parcel.WriteUint32(fileList.size());
-    for (const auto &[srcPath, fdPair] : fileList) {
-        ret = ret && parcel.WriteString(srcPath);
-        ret = ret && parcel.WriteFileDescriptor(fdPair.first);
-        ret = ret && parcel.WriteString(fdPair.second);
-    }
-    return ret;
-}
-
-bool ReadFileList(MessageParcel &parcel, FileFdMap &fileList)
-{
-    uint32_t fileListSize = parcel.ReadUint32();
-    if (fileListSize > MAX_FILE_NUM) {
-        CLOGE("The number of files exceeds the upper limit. fileListSize: %{public}u", fileListSize);
-        return false;
-    }
-    for (uint32_t i = 0; i < fileListSize; i++) {
-        std::string src = parcel.ReadString();
-        int32_t fd = parcel.ReadFileDescriptor();
-        std::string dst = parcel.ReadString();
-        fileList[src] = std::make_pair(fd, dst);
-    }
-    return true;
-}
-
 bool WriteRcvFdFileMap(MessageParcel &parcel, const RcvFdFileMap &rcvFdFileMap)
 {
     bool ret = parcel.WriteUint32(rcvFdFileMap.size());
@@ -798,21 +802,6 @@ bool WriteRcvFdFileMap(MessageParcel &parcel, const RcvFdFileMap &rcvFdFileMap)
         ret = ret && parcel.WriteString(path);
     }
     return ret;
-}
-
-bool ReadRcvFdFileMap(MessageParcel &parcel, RcvFdFileMap &rcvFdFileMap)
-{
-    uint32_t fileListSize = parcel.ReadUint32();
-    if (fileListSize > MAX_FILE_NUM) {
-        CLOGE("The number of files exceeds the upper limit. fileListSize: %{public}u", fileListSize);
-        return false;
-    }
-    for (uint32_t i = 0; i < fileListSize; i++) {
-        int32_t fd = parcel.ReadFileDescriptor();
-        std::string path = parcel.ReadString();
-        rcvFdFileMap[fd] = path;
-    }
-    return true;
 }
 } // namespace CastEngine
 } // namespace OHOS

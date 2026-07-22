@@ -59,11 +59,8 @@ bool WriteEvent(Parcel &parcel, const EventId &eventId, const std::string &jsonP
 bool ReadEvent(Parcel &parcel, int32_t &eventId, std::string &jsonParam);
 
 void SetDataCapacity(MessageParcel &parcel, const FileFdMap &fileList, uint32_t tokenSize);
-bool WriteFileList(MessageParcel &parcel, const FileFdMap &fileList);
-bool ReadFileList(MessageParcel &parcel, FileFdMap &fileList);
 
 bool WriteRcvFdFileMap(MessageParcel &parcel, const RcvFdFileMap &rcvFdFileMap);
-bool ReadRcvFdFileMap(MessageParcel &parcel, RcvFdFileMap &rcvFdFileMap);
 } // namespace CastEngine
 } // namespace OHOS
 
