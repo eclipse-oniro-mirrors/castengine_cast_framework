@@ -573,7 +573,7 @@ const OHNativeXcomponentTouchPoint ReadTouchPoint(Parcel &parcel)
     auto screenX = parcel.ReadFloat();
     auto screenY = parcel.ReadFloat();
     auto x = parcel.ReadFloat();
-    auto y = parcel.ReadFloat();  
+    auto y = parcel.ReadFloat();
     auto type = parcel.ReadUint32();
     if (!IsTouchEventType(type)) {
         CLOGE("Invalid Touch Point type: %{public}u", type);
@@ -581,7 +581,7 @@ const OHNativeXcomponentTouchPoint ReadTouchPoint(Parcel &parcel)
     }
     auto size = parcel.ReadDouble();
     auto force = parcel.ReadFloat();
-    auto timeStamp = parcel.ReadInt64();  
+    auto timeStamp = parcel.ReadInt64();
     auto isPressed = parcel.ReadBool();
     return { id, screenX, screenY, x, y, static_cast<OHNativeXcomponentTouchEventType>(type),
         size, force, timeStamp, isPressed };
