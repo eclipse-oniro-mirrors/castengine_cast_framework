@@ -41,17 +41,17 @@ const VideoSize ReadVideoSize(Parcel &parcel)
 
 bool WriteWindowProperty(Parcel &parcel, const WindowProperty &property)
 {
-    return parcel.WriteInt32(property.startX) && parcel.WriteInt32(property.startY) &&
-        parcel.WriteInt32(property.width) && parcel.WriteInt32(property.height);
+    return parcel.WriteUint32(property.startX) && parcel.WriteUint32(property.startY) &&
+        parcel.WriteUint32(property.width) && parcel.WriteUint32(property.height);
 }
 
 const WindowProperty ReadWindowProperty(Parcel &parcel)
 {
     WindowProperty property;
-    property.startX = static_cast<uint32_t>(parcel.ReadInt32());
-    property.startY = static_cast<uint32_t>(parcel.ReadInt32());
-    property.width = static_cast<uint32_t>(parcel.ReadInt32());
-    property.height = static_cast<uint32_t>(parcel.ReadInt32());
+    property.startX = parcel.ReadUint32();
+    property.startY = parcel.ReadUint32();
+    property.width = parcel.ReadUint32();
+    property.height = parcel.ReadUint32();
 
     return property;
 }
@@ -629,7 +629,7 @@ const OHNativeXcomponentMouseEvent ReadMouseEvent(Parcel &parcel)
     auto action = parcel.ReadUint32();
     auto button = parcel.ReadUint32();
     if ((!IsMouseEventAction(action)) || (!IsMouseEventButton(button))) {
-        CLOGE("Invalid Mouse Event: %{public}u or button: %{public}u", action, button);
+        CLOGE("Invalid Mouse Event action: %{public}u or button: %{public}u", action, button);
         return {};
     }
     return { x, y, screenX, screenY, timestamp,
