@@ -575,10 +575,9 @@ const OHNativeXcomponentTouchPoint ReadTouchPoint(Parcel &parcel)
     auto x = parcel.ReadFloat();
     auto y = parcel.ReadFloat();  
     auto type = parcel.ReadUint32();
-    if (type < static_cast<int32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_DOWN) ||
-        type > static_cast<int32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_PULL_IN_WINDOW)) {
-        CLOGE("Invalid virtual key event type: %{public}d", type);
-        type = static_cast<int32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_DOWN);
+    if (!IsTouchEventType(type)) {
+        CLOGE("Invalid Touch Point type: %{public}u", type);
+        return {};
     }
     auto size = parcel.ReadDouble();
     auto force = parcel.ReadFloat();
@@ -606,7 +605,12 @@ void ReadTouchEvent(Parcel &parcel, OHNativeXcomponentTouchEvent &touchEvent)
     touchEvent.screenY = parcel.ReadFloat();
     touchEvent.x = parcel.ReadFloat();
     touchEvent.y = parcel.ReadFloat();
-    touchEvent.type = static_cast<OHNativeXcomponentTouchEventType>(parcel.ReadUint32());
+    auto type = parcel.ReadUint32();
+    if (!IsTouchEventType(type)) {
+        CLOGE("Invalid Touch Event type: %{public}d", type);
+        return;
+    }
+    touchEvent.type = static_cast<OHNativeXcomponentTouchEventType>(type);
     touchEvent.size = parcel.ReadDouble();
     touchEvent.force = parcel.ReadFloat();
     touchEvent.deviceId = parcel.ReadInt64();
@@ -622,20 +626,12 @@ const OHNativeXcomponentMouseEvent ReadMouseEvent(Parcel &parcel)
     auto screenX = parcel.ReadFloat();
     auto screenY = parcel.ReadFloat();
     auto timestamp = parcel.ReadInt64();
-    int32_t action = parcel.ReadUint32();
-    if (action < static_cast<int32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_PRESS) ||
-        action > static_cast<int32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_PULL_IN_WINDOW)) {
-        CLOGE("Invalid virtual key event type: %{public}d", action);
-        action = static_cast<int32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_PRESS);
+    auto action = parcel.ReadUint32();
+    auto button = parcel.ReadUint32();
+    if ((!IsMouseEventAction(action)) || (!IsMouseEventButton(button))) {
+        CLOGE("Invalid Mouse Event: %{public}u or button: %{public}u", action, button);
+        return {};
     }
-
-    int32_t button = parcel.ReadUint32();
-    if (button < static_cast<int32_t>(OHNativeXcomponentMouseEventButton::OH_NATIVEXCOMPONENT_LEFT_BUTTON) ||
-        button > static_cast<int32_t>(OHNativeXcomponentMouseEventButton::OH_NATIVEXCOMPONENT_RIGHT_BUTTON)) {
-        CLOGE("Invalid virtual key event type: %{public}d", button);
-        button = static_cast<int32_t>(OHNativeXcomponentMouseEventButton::OH_NATIVEXCOMPONENT_LEFT_BUTTON);
-    }
-
     return { x, y, screenX, screenY, timestamp,
         static_cast<OHNativeXcomponentMouseEventAction>(action),
         static_cast<OHNativeXcomponentMouseEventButton>(button) };
@@ -644,10 +640,9 @@ const OHNativeXcomponentMouseEvent ReadMouseEvent(Parcel &parcel)
 const OHNativeXcomponentWheelEvent ReadWhellEvent(Parcel &parcel)
 {
     int32_t typeValue = parcel.ReadInt32();
-    if (typeValue < static_cast<int32_t>(OHNativeXcomponentWheelEventDirection::OH_NATIVEXCOMPONENT_WHEEL_VERTICAL) ||
-        typeValue > static_cast<int32_t>(OHNativeXcomponentWheelEventDirection::OH_NATIVEXCOMPONENT_WHEEL_HORIZONTAL)) {
-        CLOGE("Invalid virtual key event type: %{public}d", typeValue);
-        typeValue = static_cast<int32_t>(OHNativeXcomponentWheelEventDirection::OH_NATIVEXCOMPONENT_WHEEL_VERTICAL);
+    if (!IsWheelEventDirection(typeValue)) {
+        CLOGE("Invalid Wheel Event: %{public}d", typeValue);
+        return {};
     }
     return { static_cast<OHNativeXcomponentWheelEventDirection>(typeValue),
         parcel.ReadUint8(),
@@ -659,8 +654,16 @@ const OHNativeXcomponentWheelEvent ReadWhellEvent(Parcel &parcel)
 
 const OHNativeXcomponentKeyEvent ReadKeyEvent(Parcel &parcel)
 {
-    return { parcel.ReadUint8(), parcel.ReadUint16(), parcel.ReadUint16(), parcel.ReadUint32(),
-        static_cast<OHNativeXcomponentKeyEventType>(parcel.ReadUint32()) };
+    auto reserved = parcel.ReadUint8();
+    auto keyCode1 = parcel.ReadUint16();
+    auto keyCode2 = parcel.ReadUint16();
+    auto metaState = parcel.ReadUint32();
+    auto type = parcel.ReadUint32();
+    if (!IsKeyEventType(type)) {
+        CLOGE("Invalid Key Event: %{public}u", type);
+        return {};
+    }
+    return { reserved, keyCode1, keyCode2, metaState, static_cast<OHNativeXcomponentKeyEventType>(type) };
 }
 
 void ReadContentEvent(Parcel &parcel, OHNativeXcomponentContentEvent &contentEvent)
@@ -685,7 +688,12 @@ const OHNativeXcomponentFocusEvent ReadFocusEvent(Parcel &parcel)
 
 void ReadInputMethodEvent(Parcel &parcel, OHNativeXcomponentInputMethodEvent &inputMethodEvent)
 {
-    inputMethodEvent.type = static_cast<OHNativeXcomponentInputMethodEventType>(parcel.ReadUint16());
+    uint16_t type = parcel.ReadUint16();
+    if (!IsInputMethodEventType(tyep)) {
+        CLOGE("Invalid Input Method Event %{public}u.", type);
+        return;
+    }
+    inputMethodEvent.type = static_cast<OHNativeXcomponentInputMethodEventType>(type);
     if (inputMethodEvent.type == OHNativeXcomponentInputMethodEventType::OH_NATIVEXCOMPONENT_INPUT_CONTENT) {
         return ReadContentEvent(parcel, inputMethodEvent.contentEvent);
     }
@@ -695,10 +703,9 @@ void ReadInputMethodEvent(Parcel &parcel, OHNativeXcomponentInputMethodEvent &in
 const OHNativeXcomponentVirtualKeyEvent ReadVirtualKeyEvent(Parcel &parcel)
 {
     int32_t typeValue = parcel.ReadInt32();
-    if (typeValue < static_cast<int32_t>(OHNativeXcomponentVirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_BACK) ||
-        typeValue > static_cast<int32_t>(OHNativeXcomponentVirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_QUICK_SETTING)) {
+    if (!IsVirtualKeyEventType(typeValue)) {
         CLOGE("Invalid virtual key event type: %{public}d", typeValue);
-        typeValue = static_cast<int32_t>(OHNativeXcomponentVirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_BACK);
+        return {};
     }
     return { static_cast<OHNativeXcomponentVirtualKeyEventType>(typeValue), parcel.ReadFloat(),
         parcel.ReadFloat() };
