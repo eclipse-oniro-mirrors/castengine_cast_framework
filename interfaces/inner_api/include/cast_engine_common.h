@@ -24,7 +24,6 @@
 #include <string>
 #include "pixel_map.h"
 #include "cast_data_source.h"
-#include "oh_remote_control_event.h"
 
 #include <message_parcel.h>
 #define EXPORT __attribute__((visibility("default")))
@@ -321,60 +320,6 @@ enum class EXPORT VideoCodecType {
 inline bool EXPORT IsVideoCodecType(int32_t type)
 {
     return (type == static_cast<int32_t>(VideoCodecType::H264)) || (type == static_cast<int32_t>(VideoCodecType::H265));
-}
-
-inline bool EXPORT IsTouchEventType(uint32_t type)
-{
-    return (type == static_cast<uint32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_DOWN)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_UP)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_MOVE)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_CANCEL)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentTouchEventType::OH_NATIVEXCOMPONENT_TOUCH_PULL_IN_WINDOW));
-}
-
-inline bool EXPORT IsMouseEventAction(uint32_t type)
-{
-    return (type == static_cast<uint32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_PRESS)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_RELEASE)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_MOVE)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_NONE)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentMouseEventAction::OH_NATIVEXCOMPONENT_MOUSE_PULL_IN_WINDOW));
-}
-
-inline bool EXPORT IsMouseEventButton(uint32_t type)
-{
-    return (type == static_cast<uint32_t>(OHNativeXcomponentMouseEventButton::OH_NATIVEXCOMPONENT_LEFT_BUTTON)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentMouseEventButton::OH_NATIVEXCOMPONENT_MIDDLE_BUTTON)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentMouseEventButton::OH_NATIVEXCOMPONENT_RIGHT_BUTTON));
-}
-
-using WheelEventDirection = OHNativeXcomponentWheelEventDirection;
-inline bool EXPORT IsWheelEventDirection(int32_t type)
-{
-    return (type == static_cast<int32_t>(WheelEventDirection::OH_NATIVEXCOMPONENT_WHEEL_VERTICAL)) ||
-        (type == static_cast<int32_t>(WheelEventDirection::OH_NATIVEXCOMPONENT_WHEEL_HORIZONTAL));
-}
-
-inline bool EXPORT IsKeyEventType(uint32_t type)
-{
-    return (type == static_cast<uint32_t>(OHNativeXcomponentKeyEventType::OH_NATIVEXCOMPONENT_KEY_DOWN)) ||
-        (type == static_cast<uint32_t>(OHNativeXcomponentKeyEventType::OH_NATIVEXCOMPONENT_KEY_UP));
-}
-
-using InputMethodEventType = OHNativeXcomponentInputMethodEventType;
-inline bool EXPORT IsInputMethodEventType(uint16_t type)
-{
-    return (type == static_cast<uint16_t>(InputMethodEventType::OH_NATIVEXCOMPONENT_INPUT_CONTENT)) ||
-        (type == static_cast<uint16_t>(InputMethodEventType::OH_NATIVEXCOMPONENT_INPUT_FOCUS));
-}
-
-using VirtualKeyEventType = OHNativeXcomponentVirtualKeyEventType;
-inline bool EXPORT IsVirtualKeyEventType(int32_t type)
-{
-    return (type == static_cast<int32_t>(VirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_BACK)) ||
-        (type == static_cast<int32_t>(VirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_HOME)) ||
-        (type == static_cast<int32_t>(VirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_RECENT_APP)) ||
-        (type == static_cast<int32_t>(VirtualKeyEventType::OH_NATIVEXCOMPONENT_VIRTUALKEY_QUICK_SETTING));
 }
 
 inline bool EXPORT IsDeviceState(int32_t state)
