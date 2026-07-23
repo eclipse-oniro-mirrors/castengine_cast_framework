@@ -322,12 +322,6 @@ inline bool EXPORT IsVideoCodecType(int32_t type)
     return (type == static_cast<int32_t>(VideoCodecType::H264)) || (type == static_cast<int32_t>(VideoCodecType::H265));
 }
 
-inline bool EXPORT IsDeviceState(int32_t state)
-{
-    return (state >= static_cast<int32_t>(DeviceState::CONNECTING)) &&
-        (state < static_cast<int32_t>(DeviceState::DEVICE_STATE_MAX));
-}
-
 struct EXPORT AudioProperty {
     uint32_t sampleRate{ 0 };
     uint8_t sampleBitWidth{ 0 };
