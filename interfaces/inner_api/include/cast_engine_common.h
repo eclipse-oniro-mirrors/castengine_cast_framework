@@ -24,6 +24,7 @@
 #include <string>
 #include "pixel_map.h"
 #include "cast_data_source.h"
+#include "oh_remote_control_event.h"
 
 #include <message_parcel.h>
 #define EXPORT __attribute__((visibility("default")))
