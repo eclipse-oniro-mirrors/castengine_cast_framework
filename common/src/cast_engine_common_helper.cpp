@@ -689,7 +689,7 @@ const OHNativeXcomponentFocusEvent ReadFocusEvent(Parcel &parcel)
 void ReadInputMethodEvent(Parcel &parcel, OHNativeXcomponentInputMethodEvent &inputMethodEvent)
 {
     uint16_t type = parcel.ReadUint16();
-    if (!IsInputMethodEventType(tyep)) {
+    if (!IsInputMethodEventType(type)) {
         CLOGE("Invalid Input Method Event %{public}u.", type);
         return;
     }
