@@ -52,4 +52,5 @@ ohos_static_library("cast_engine_common_sources") {
 
   subsystem_name = "castplus"
   part_name = "cast_engine"
+  branch_protector_ret = "pac_ret"
 }

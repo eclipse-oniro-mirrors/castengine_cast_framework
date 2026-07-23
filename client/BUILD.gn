@@ -63,4 +63,5 @@ ohos_static_library("cast_client_inner") {
 
   subsystem_name = "castplus"
   part_name = "cast_engine"
+  branch_protector_ret = "pac_ret"
 }
