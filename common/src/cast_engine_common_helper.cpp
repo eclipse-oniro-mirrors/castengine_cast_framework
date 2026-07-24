@@ -41,17 +41,17 @@ const VideoSize ReadVideoSize(Parcel &parcel)
 
 bool WriteWindowProperty(Parcel &parcel, const WindowProperty &property)
 {
-    return parcel.WriteInt32(property.startX) && parcel.WriteInt32(property.startY) &&
-        parcel.WriteInt32(property.width) && parcel.WriteInt32(property.height);
+    return parcel.WriteUint32(property.startX) && parcel.WriteUint32(property.startY) &&
+        parcel.WriteUint32(property.width) && parcel.WriteUint32(property.height);
 }
 
 const WindowProperty ReadWindowProperty(Parcel &parcel)
 {
     WindowProperty property;
-    property.startX = static_cast<uint32_t>(parcel.ReadInt32());
-    property.startY = static_cast<uint32_t>(parcel.ReadInt32());
-    property.width = static_cast<uint32_t>(parcel.ReadInt32());
-    property.height = static_cast<uint32_t>(parcel.ReadInt32());
+    property.startX = parcel.ReadUint32();
+    property.startY = parcel.ReadUint32();
+    property.width = parcel.ReadUint32();
+    property.height = parcel.ReadUint32();
 
     return property;
 }
@@ -569,11 +569,22 @@ bool WriteRemoteControlEvent(Parcel &parcel, const OHRemoteControlEvent &event)
 
 const OHNativeXcomponentTouchPoint ReadTouchPoint(Parcel &parcel)
 {
-    return { parcel.ReadInt32(),  parcel.ReadFloat(),
-        parcel.ReadFloat(),  parcel.ReadFloat(),
-        parcel.ReadFloat(),  static_cast<OHNativeXcomponentTouchEventType>(parcel.ReadUint32()),
-        parcel.ReadDouble(), parcel.ReadFloat(),
-        parcel.ReadInt64(),  parcel.ReadBool() };
+    auto id = parcel.ReadInt32();
+    auto screenX = parcel.ReadFloat();
+    auto screenY = parcel.ReadFloat();
+    auto x = parcel.ReadFloat();
+    auto y = parcel.ReadFloat();
+    auto type = parcel.ReadUint32();
+    if (!IsTouchEventType(type)) {
+        CLOGE("Invalid Touch Point type: %{public}u", type);
+        return {};
+    }
+    auto size = parcel.ReadDouble();
+    auto force = parcel.ReadFloat();
+    auto timeStamp = parcel.ReadInt64();
+    auto isPressed = parcel.ReadBool();
+    return { id, screenX, screenY, x, y, static_cast<OHNativeXcomponentTouchEventType>(type),
+        size, force, timeStamp, isPressed };
 }
 
 void ReadTouchPoints(Parcel &parcel, uint32_t numPoints, OHNativeXcomponentTouchPoint points[])
@@ -594,7 +605,12 @@ void ReadTouchEvent(Parcel &parcel, OHNativeXcomponentTouchEvent &touchEvent)
     touchEvent.screenY = parcel.ReadFloat();
     touchEvent.x = parcel.ReadFloat();
     touchEvent.y = parcel.ReadFloat();
-    touchEvent.type = static_cast<OHNativeXcomponentTouchEventType>(parcel.ReadUint32());
+    auto type = parcel.ReadUint32();
+    if (!IsTouchEventType(type)) {
+        CLOGE("Invalid Touch Event type: %{public}d", type);
+        return;
+    }
+    touchEvent.type = static_cast<OHNativeXcomponentTouchEventType>(type);
     touchEvent.size = parcel.ReadDouble();
     touchEvent.force = parcel.ReadFloat();
     touchEvent.deviceId = parcel.ReadInt64();
@@ -605,18 +621,30 @@ void ReadTouchEvent(Parcel &parcel, OHNativeXcomponentTouchEvent &touchEvent)
 
 const OHNativeXcomponentMouseEvent ReadMouseEvent(Parcel &parcel)
 {
-    return { parcel.ReadFloat(),
-        parcel.ReadFloat(),
-        parcel.ReadFloat(),
-        parcel.ReadFloat(),
-        parcel.ReadInt64(),
-        static_cast<OHNativeXcomponentMouseEventAction>(parcel.ReadUint32()),
-        static_cast<OHNativeXcomponentMouseEventButton>(parcel.ReadUint32()) };
+    auto x = parcel.ReadFloat();
+    auto y = parcel.ReadFloat();
+    auto screenX = parcel.ReadFloat();
+    auto screenY = parcel.ReadFloat();
+    auto timestamp = parcel.ReadInt64();
+    auto action = parcel.ReadUint32();
+    auto button = parcel.ReadUint32();
+    if ((!IsMouseEventAction(action)) || (!IsMouseEventButton(button))) {
+        CLOGE("Invalid Mouse Event action: %{public}u or button: %{public}u", action, button);
+        return {};
+    }
+    return { x, y, screenX, screenY, timestamp,
+        static_cast<OHNativeXcomponentMouseEventAction>(action),
+        static_cast<OHNativeXcomponentMouseEventButton>(button) };
 }
 
 const OHNativeXcomponentWheelEvent ReadWhellEvent(Parcel &parcel)
 {
-    return { static_cast<OHNativeXcomponentWheelEventDirection>(parcel.ReadUint32()),
+    int32_t typeValue = parcel.ReadInt32();
+    if (!IsWheelEventDirection(typeValue)) {
+        CLOGE("Invalid Wheel Event: %{public}d", typeValue);
+        return {};
+    }
+    return { static_cast<OHNativeXcomponentWheelEventDirection>(typeValue),
         parcel.ReadUint8(),
         parcel.ReadUint8(),
         parcel.ReadUint16(),
@@ -626,15 +654,27 @@ const OHNativeXcomponentWheelEvent ReadWhellEvent(Parcel &parcel)
 
 const OHNativeXcomponentKeyEvent ReadKeyEvent(Parcel &parcel)
 {
-    return { parcel.ReadUint8(), parcel.ReadUint16(), parcel.ReadUint16(), parcel.ReadUint32(),
-        static_cast<OHNativeXcomponentKeyEventType>(parcel.ReadUint32()) };
+    auto reserved = parcel.ReadUint8();
+    auto keyCode1 = parcel.ReadUint16();
+    auto keyCode2 = parcel.ReadUint16();
+    auto metaState = parcel.ReadUint32();
+    auto type = parcel.ReadUint32();
+    if (!IsKeyEventType(type)) {
+        CLOGE("Invalid Key Event: %{public}u", type);
+        return {};
+    }
+    return { reserved, keyCode1, keyCode2, metaState, static_cast<OHNativeXcomponentKeyEventType>(type) };
 }
 
 void ReadContentEvent(Parcel &parcel, OHNativeXcomponentContentEvent &contentEvent)
 {
     contentEvent.msgLen = parcel.ReadUint16();
-    int32_t err = memcpy_s(contentEvent.inputText,
-        OH_MAX_CONTENT_LEN, parcel.ReadBuffer(contentEvent.msgLen), contentEvent.msgLen);
+    const uint8_t *buf = parcel.ReadBuffer(contentEvent.msgLen);
+    if (buf == nullptr || contentEvent.msgLen > OH_MAX_CONTENT_LEN) {
+        CLOGE("Failed to read data.");
+        return;
+    }
+    int32_t err = memcpy_s(contentEvent.inputText, OH_MAX_CONTENT_LEN, buf, contentEvent.msgLen);
     if (err != 0) {
         CLOGE("memcpy_s inputText failed, err = %{public}d.", err);
     }
@@ -648,7 +688,12 @@ const OHNativeXcomponentFocusEvent ReadFocusEvent(Parcel &parcel)
 
 void ReadInputMethodEvent(Parcel &parcel, OHNativeXcomponentInputMethodEvent &inputMethodEvent)
 {
-    inputMethodEvent.type = static_cast<OHNativeXcomponentInputMethodEventType>(parcel.ReadUint16());
+    uint16_t type = parcel.ReadUint16();
+    if (!IsInputMethodEventType(type)) {
+        CLOGE("Invalid Input Method Event %{public}u.", type);
+        return;
+    }
+    inputMethodEvent.type = static_cast<OHNativeXcomponentInputMethodEventType>(type);
     if (inputMethodEvent.type == OHNativeXcomponentInputMethodEventType::OH_NATIVEXCOMPONENT_INPUT_CONTENT) {
         return ReadContentEvent(parcel, inputMethodEvent.contentEvent);
     }
@@ -657,7 +702,12 @@ void ReadInputMethodEvent(Parcel &parcel, OHNativeXcomponentInputMethodEvent &in
 
 const OHNativeXcomponentVirtualKeyEvent ReadVirtualKeyEvent(Parcel &parcel)
 {
-    return { static_cast<OHNativeXcomponentVirtualKeyEventType>(parcel.ReadInt32()), parcel.ReadFloat(),
+    int32_t typeValue = parcel.ReadInt32();
+    if (!IsVirtualKeyEventType(typeValue)) {
+        CLOGE("Invalid virtual key event type: %{public}d", typeValue);
+        return {};
+    }
+    return { static_cast<OHNativeXcomponentVirtualKeyEventType>(typeValue), parcel.ReadFloat(),
         parcel.ReadFloat() };
 }
 
@@ -763,33 +813,6 @@ void SetDataCapacity(MessageParcel &parcel, const FileFdMap &fileList, uint32_t 
     }
 }
 
-bool WriteFileList(MessageParcel &parcel, const FileFdMap &fileList)
-{
-    bool ret = parcel.WriteUint32(fileList.size());
-    for (const auto &[srcPath, fdPair] : fileList) {
-        ret = ret && parcel.WriteString(srcPath);
-        ret = ret && parcel.WriteFileDescriptor(fdPair.first);
-        ret = ret && parcel.WriteString(fdPair.second);
-    }
-    return ret;
-}
-
-bool ReadFileList(MessageParcel &parcel, FileFdMap &fileList)
-{
-    uint32_t fileListSize = parcel.ReadUint32();
-    if (fileListSize > MAX_FILE_NUM) {
-        CLOGE("The number of files exceeds the upper limit. fileListSize: %{public}u", fileListSize);
-        return false;
-    }
-    for (uint32_t i = 0; i < fileListSize; i++) {
-        std::string src = parcel.ReadString();
-        int32_t fd = parcel.ReadFileDescriptor();
-        std::string dst = parcel.ReadString();
-        fileList[src] = std::make_pair(fd, dst);
-    }
-    return true;
-}
-
 bool WriteRcvFdFileMap(MessageParcel &parcel, const RcvFdFileMap &rcvFdFileMap)
 {
     bool ret = parcel.WriteUint32(rcvFdFileMap.size());
@@ -798,21 +821,6 @@ bool WriteRcvFdFileMap(MessageParcel &parcel, const RcvFdFileMap &rcvFdFileMap)
         ret = ret && parcel.WriteString(path);
     }
     return ret;
-}
-
-bool ReadRcvFdFileMap(MessageParcel &parcel, RcvFdFileMap &rcvFdFileMap)
-{
-    uint32_t fileListSize = parcel.ReadUint32();
-    if (fileListSize > MAX_FILE_NUM) {
-        CLOGE("The number of files exceeds the upper limit. fileListSize: %{public}u", fileListSize);
-        return false;
-    }
-    for (uint32_t i = 0; i < fileListSize; i++) {
-        int32_t fd = parcel.ReadFileDescriptor();
-        std::string path = parcel.ReadString();
-        rcvFdFileMap[fd] = path;
-    }
-    return true;
 }
 } // namespace CastEngine
 } // namespace OHOS

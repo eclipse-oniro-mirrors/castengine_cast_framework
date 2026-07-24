@@ -18,6 +18,11 @@ config("cast_discovery_config") {
 }
 
 ohos_static_library("cast_discovery") {
+  sanitize = {
+      cfi = true
+      cfi_cross_dso = true
+      debug = false
+  }
   sources = [
     "src/cast_device_data_manager.cpp",
     "src/connection_manager.cpp",
@@ -64,4 +69,5 @@ ohos_static_library("cast_discovery") {
 
   subsystem_name = "castplus"
   part_name = "cast_engine"
+  branch_protector_ret = "pac_ret"
 }

@@ -319,7 +319,7 @@ enum class EXPORT VideoCodecType {
 
 inline bool EXPORT IsVideoCodecType(int32_t type)
 {
-    return (type == static_cast<int32_t>(VideoCodecType::H264)) || type == static_cast<int32_t>(VideoCodecType::H265);
+    return (type == static_cast<int32_t>(VideoCodecType::H264)) || (type == static_cast<int32_t>(VideoCodecType::H265));
 }
 
 struct EXPORT AudioProperty {

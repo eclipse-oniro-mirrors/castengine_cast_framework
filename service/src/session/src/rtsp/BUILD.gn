@@ -59,4 +59,5 @@ ohos_static_library("cast_session_rtsp") {
 
   subsystem_name = "castplus"
   part_name = "cast_engine"
+  branch_protector_ret = "pac_ret"
 }
