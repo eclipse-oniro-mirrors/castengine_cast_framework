@@ -711,6 +711,14 @@ int32_t StreamPlayerImplStub::GetPosition(int &position)
     return streamPlayerImpl->GetPosition(position);
 }
 
+int32_t StreamPlayerImplStub::GetDownloadRate(int64_t &totalAverageRate, int64_t &lastSecondRate)
+{
+    CLOGE("GetDownloadRate is not supported");
+    totalAverageRate = -1;
+    lastSecondRate = -1;
+    return CAST_ENGINE_ERROR;
+}
+
 int32_t StreamPlayerImplStub::GetDuration(int &duration)
 {
     auto streamPlayerImpl = PlayerImplGetter();
