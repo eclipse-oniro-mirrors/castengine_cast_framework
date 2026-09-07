@@ -590,6 +590,35 @@ int32_t StreamPlayerImplProxy::GetPosition(int &position)
     return errorCode;
 }
 
+int32_t StreamPlayerImplProxy::GetDownloadRate(int64_t &totalAverageRate, int64_t &lastSecondRate)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+ 
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        CLOGE("Failed to write the interface token");
+        return CAST_ENGINE_ERROR;
+    }
+    if (Remote()->SendRequest(GET_DOWNLOAD_RATE, data, reply, option) != ERR_NONE) {
+        CLOGE("Failed to send ipc request when get download rate");
+        return CAST_ENGINE_ERROR;
+    }
+ 
+    int32_t errorCode = reply.ReadInt32();
+    CHECK_AND_RETURN_RET_LOG(errorCode != CAST_ENGINE_SUCCESS, errorCode, "CastEngine Errors");
+    if (!reply.ReadInt64(totalAverageRate)) {
+        CLOGE("Failed to read total average rate from reply");
+        return CAST_ENGINE_ERROR;
+    }
+    if (!reply.ReadInt64(lastSecondRate)) {
+        CLOGE("Failed to read last second rate from reply");
+        return CAST_ENGINE_ERROR;
+    }
+ 
+    return errorCode;
+}
+
 int32_t StreamPlayerImplProxy::GetDuration(int &duration)
 {
     MessageParcel data;
