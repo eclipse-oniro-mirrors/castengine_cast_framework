@@ -74,6 +74,7 @@ void NapiStreamPlayer::DefineStreamPlayerJSClass(napi_env env)
         DECLARE_NAPI_FUNCTION("setMute", SetMute),
         DECLARE_NAPI_FUNCTION("getPlayerStatus", GetPlayerStatus),
         DECLARE_NAPI_FUNCTION("getPosition", GetPosition),
+        DECLARE_NAPI_FUNCTION("getDownloadRate", GetDownloadRate),
         DECLARE_NAPI_FUNCTION("getVolume", GetVolume),
         DECLARE_NAPI_FUNCTION("getMute", GetMute),
         DECLARE_NAPI_FUNCTION("getLoopMode", GetLoopMode),
@@ -1459,6 +1460,58 @@ napi_value NapiStreamPlayer::GetPosition(napi_env env, napi_callback_info info)
         CHECK_STATUS_RETURN_VOID(napiAsyntask, "napi_create_int32 failed", NapiErrors::errcode_[CAST_ENGINE_ERROR]);
     };
     return NapiAsyncWork::Enqueue(env, napiAsyntask, "GetPosition", executor, complete);
+}
+
+napi_value NapiStreamPlayer::GetDownloadRate(napi_env env, napi_callback_info info)
+{
+    CLOGD("Start to get download rate in");
+    struct ConcreteTask : public NapiAsyncTask {
+        int64_t totalAverageRate_ = -1;
+        int64_t lastSecondRate_ = -1;
+    };
+    auto napiAsyntask = std::make_shared<ConcreteTask>();
+    if (napiAsyntask == nullptr) {
+        CLOGE("Create NapiAsyncTask failed");
+        return GetUndefinedValue(env);
+    }
+ 
+    napiAsyntask->GetJSInfo(env, info);
+    auto executor = [napiAsyntask]() {
+        auto *napiStreamPlayer = reinterpret_cast<NapiStreamPlayer *>(napiAsyntask->native);
+        CHECK_ARGS_RETURN_VOID(napiAsyntask, napiStreamPlayer != nullptr, "napiStreamPlayer is null",
+            NapiErrors::errcode_[CAST_ENGINE_ERROR]);
+        std::shared_ptr<IStreamPlayer> streamPlayer = napiStreamPlayer->GetStreamPlayer();
+        CHECK_ARGS_RETURN_VOID(napiAsyntask, streamPlayer, "IStreamPlayer is null",
+            NapiErrors::errcode_[CAST_ENGINE_ERROR]);
+        int32_t ret = streamPlayer->GetDownloadRate(napiAsyntask->totalAverageRate_, napiAsyntask->lastSecondRate_);
+        if (ret != CAST_ENGINE_SUCCESS) {
+            if (ret == ERR_NO_PERMISSION) {
+                napiAsyntask->errMessage = "GetDownloadRate failed : no permission";
+            } else {
+                napiAsyntask->errMessage = "GetDownloadRate failed : native server exception";
+            }
+            napiAsyntask->status = napi_generic_failure;
+            napiAsyntask->errCode = NapiErrors::errcode_[ret];
+        }
+    };
+ 
+    auto complete = [env, napiAsyntask](napi_value &output) {
+        napiAsyntask->status = napi_create_object(env, &output);
+        CHECK_STATUS_RETURN_VOID(napiAsyntask, "napi_create_object failed", NapiErrors::errcode_[CAST_ENGINE_ERROR]);
+        napi_value totalAverageRate = nullptr;
+        napi_value lastSecondRate = nullptr;
+        napiAsyntask->status = napi_create_int64(env, napiAsyntask->totalAverageRate_, &totalAverageRate);
+        CHECK_STATUS_RETURN_VOID(napiAsyntask, "napi_create_int64 failed", NapiErrors::errcode_[CAST_ENGINE_ERROR]);
+        napiAsyntask->status = napi_create_int64(env, napiAsyntask->lastSecondRate_, &lastSecondRate);
+        CHECK_STATUS_RETURN_VOID(napiAsyntask, "napi_create_int64 failed", NapiErrors::errcode_[CAST_ENGINE_ERROR]);
+        napiAsyntask->status = napi_set_named_property(env, output, "totalAverageRate", totalAverageRate);
+        CHECK_STATUS_RETURN_VOID(napiAsyntask, "napi_set_named_property failed",
+            NapiErrors::errcode_[CAST_ENGINE_ERROR]);
+        napiAsyntask->status = napi_set_named_property(env, output, "lastSecondRate", lastSecondRate);
+        CHECK_STATUS_RETURN_VOID(napiAsyntask, "napi_set_named_property failed",
+            NapiErrors::errcode_[CAST_ENGINE_ERROR]);
+    };
+    return NapiAsyncWork::Enqueue(env, napiAsyntask, "GetDownloadRate", executor, complete);
 }
 
 napi_value NapiStreamPlayer::GetVolume(napi_env env, napi_callback_info info)
