@@ -78,6 +78,7 @@ private:
     static napi_value SetSpeed(napi_env env, napi_callback_info info);
     static napi_value GetPlayerStatus(napi_env env, napi_callback_info info);
     static napi_value GetPosition(napi_env env, napi_callback_info info);
+    static napi_value GetDownloadRate(napi_env env, napi_callback_info info);
     static napi_value GetVolume(napi_env env, napi_callback_info info);
     static napi_value GetMute(napi_env env, napi_callback_info info);
     static napi_value GetLoopMode(napi_env env, napi_callback_info info);
