@@ -172,6 +172,11 @@ int32_t StreamPlayer::GetPosition(int &position)
     return proxy_ ? proxy_->GetPosition(position) : CAST_ENGINE_ERROR;
 }
 
+int32_t StreamPlayer::GetDownloadRate(int64_t &totalAverageRate, int64_t &lastSecondRate)
+{
+    return proxy_ ? proxy_->GetDownloadRate(totalAverageRate, lastSecondRate) : CAST_ENGINE_ERROR;
+}
+
 int32_t StreamPlayer::GetDuration(int &duration)
 {
     return proxy_ ? proxy_->GetDuration(duration) : CAST_ENGINE_ERROR;
