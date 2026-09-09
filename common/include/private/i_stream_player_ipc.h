@@ -60,6 +60,7 @@ public:
     virtual int32_t SetSpeed(const PlaybackSpeed speed) = 0;
     virtual int32_t GetPlayerStatus(PlayerStates &playerStates) = 0;
     virtual int32_t GetPosition(int &position) = 0;
+    virtual int32_t GetDownloadRate(int64_t &totalAverageRate, int64_t &lastSecondRate) = 0;
     virtual int32_t GetDuration(int &duration) = 0;
     virtual int32_t GetVolume(int &volume, int &maxVolume) = 0;
     virtual int32_t GetMute(bool &mute) = 0;
@@ -93,6 +94,7 @@ protected:
         SET_SPEED,
         GET_PLAYER_STATUS,
         GET_POSITION,
+        GET_DOWNLOAD_RATE,
         GET_DURATION,
         GET_VOLUME,
         GET_MUTE,

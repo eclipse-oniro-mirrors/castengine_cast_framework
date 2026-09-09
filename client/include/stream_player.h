@@ -58,6 +58,7 @@ public:
 
     int32_t GetPlayerStatus(PlayerStates &playerStates) override;
     int32_t GetPosition(int &position) override;
+    int32_t GetDownloadRate(int64_t &totalAverageRate, int64_t &lastSecondRate) override;
     int32_t GetDuration(int &duration) override;
     int32_t GetVolume(int &volume, int &maxVolume) override;
     int32_t GetMute(bool &mute) override;
