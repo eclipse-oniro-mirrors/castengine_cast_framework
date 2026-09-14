@@ -885,8 +885,6 @@ int32_t StreamPlayerImplProxy::UpdateMediaInfo(const MediaInfo &mediaInfo)
         return CAST_ENGINE_ERROR;
     }
     CHECK_AND_RETURN_RET_LOG(Remote() == nullptr, CAST_ENGINE_ERROR, "Remote() is null");
-
-+1
     int32_t ret = Remote()->SendRequest(UPDATE_MEDIA_INFO, data, reply, option);
     if (ret == ERR_INVALID_DATA) {
         CLOGE("Invalid parameter when UpdateMediaInfo");
