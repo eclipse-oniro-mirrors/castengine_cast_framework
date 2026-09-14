@@ -55,6 +55,7 @@ private:
     int32_t DoOnAlbumCoverChangedTask(MessageParcel &data, MessageParcel &reply);
     int32_t DoOnKeyRequestTask(MessageParcel &data, MessageParcel &reply);
     int32_t DoOnAvailableCapabilityChangedTask(MessageParcel &data, MessageParcel &reply);
+    int32_t DoOnMediaInfoChangedTask(MessageParcel &data, MessageParcel &reply);
 
     void OnStateChanged(const PlayerStates playbackState, bool isPlayWhenReady) override;
     void OnPositionChanged(int position, int bufferPosition, int duration) override;
@@ -73,6 +74,7 @@ private:
     void OnAlbumCoverChanged(std::shared_ptr<Media::PixelMap> pixelMap) override;
     void OnKeyRequest(const std::string &mediaId, const std::vector<uint8_t> &keyRequestData) override;
     void OnAvailableCapabilityChanged(const StreamCapability &streamCapability) override;
+    void OnMediaInfoChanged(const MediaInfo &mediaInfo) override;
 
     std::shared_ptr<IStreamPlayerListener> userListener_;
 };
