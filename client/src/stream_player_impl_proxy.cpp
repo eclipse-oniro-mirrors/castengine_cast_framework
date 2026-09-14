@@ -870,6 +870,37 @@ int32_t StreamPlayerImplProxy::ProvideKeyResponse(const std::string &mediaId, co
     return errorCode;
 }
 
+int32_t StreamPlayerImplProxy::UpdateMediaInfo(const MediaInfo &mediaInfo)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+ 
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        CLOGE("Failed to write the interface token");
+        return CAST_ENGINE_ERROR;
+    }
+    if (!WriteMediaInfo(data, mediaInfo)) {
+        CLOGE("Failed to write the mediaInfo");
+        return CAST_ENGINE_ERROR;
+    }
+    CHECK_AND_RETURN_RET_LOG(Remote() == nullptr, CAST_ENGINE_ERROR, "Remote() is null");
+
++1
+    int32_t ret = Remote()->SendRequest(UPDATE_MEDIA_INFO, data, reply, option);
+    if (ret == ERR_INVALID_DATA) {
+        CLOGE("Invalid parameter when UpdateMediaInfo");
+        return ERR_INVALID_PARAM;
+    } else if (ret != ERR_NONE) {
+        CLOGE("Failed to send ipc request when UpdateMediaInfo");
+        return CAST_ENGINE_ERROR;
+    }
+ 
+    int32_t errorCode = reply.ReadInt32();
+    CHECK_AND_RETURN_RET_LOG(errorCode != CAST_ENGINE_SUCCESS, errorCode, "CastEngine Errors");
+    return errorCode;
+}
+
 int32_t StreamPlayerImplProxy::Release()
 {
     MessageParcel data;
