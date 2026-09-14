@@ -51,6 +51,7 @@ public:
     virtual void OnKeyRequest(const std::string &mediaId, const std::vector<uint8_t> &keyRequestData) = 0;
     virtual void OnAvailableCapabilityChanged(const StreamCapability &streamCapability) = 0;
     virtual void OnData(const DataType dataType, const std::string &dataStr) = 0;
+    virtual void OnMediaInfoChanged(const MediaInfo &mediaInfo) = 0;
 };
 
 class EXPORT IStreamPlayer {
