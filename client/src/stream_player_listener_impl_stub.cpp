@@ -57,6 +57,7 @@ StreamPlayerListenerImplStub::StreamPlayerListenerImplStub(std::shared_ptr<IStre
     FILL_SINGLE_STUB_TASK(ON_KEY_REQUEST, &StreamPlayerListenerImplStub::DoOnKeyRequestTask);
     FILL_SINGLE_STUB_TASK(ON_AVAILABLE_CAPABILITY_CHANGED,
         &StreamPlayerListenerImplStub::DoOnAvailableCapabilityChangedTask);
+    FILL_SINGLE_STUB_TASK(ON_MEDIA_INFO_CHANGED, &StreamPlayerListenerImplStub::DoOnMediaInfoChangedTask);
 }
 
 StreamPlayerListenerImplStub::~StreamPlayerListenerImplStub()
@@ -249,6 +250,24 @@ int32_t StreamPlayerListenerImplStub::DoOnAvailableCapabilityChangedTask(Message
     auto streamCapability = ReadStreamCapability(data);
     userListener_->OnAvailableCapabilityChanged(streamCapability);
 
+    return ERR_NONE;
+}
+
+int32_t StreamPlayerListenerImplStub::DoOnMediaInfoChangedTask(MessageParcel &data, MessageParcel &reply)
+{
+    static_cast<void>(reply);
+    auto mediaInfo = ReadMediaInfo(data);
+    if (mediaInfo == nullptr) {
+        CLOGE("DoOnMediaInfoChangedTask, mediaInfo is null");
+        return ERR_NULL_OBJECT;
+    }
+    if (userListener_ == nullptr) {
+        CLOGE("userListener_ is null");
+        CheckAndCloseFd(*mediaInfo);
+        return ERR_NULL_OBJECT;
+    }
+    userListener_->OnMediaInfoChanged(*mediaInfo);
+    CheckAndCloseFd(*mediaInfo);
     return ERR_NONE;
 }
 
