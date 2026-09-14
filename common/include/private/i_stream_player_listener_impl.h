@@ -52,6 +52,7 @@ public:
     virtual void OnAlbumCoverChanged(std::shared_ptr<Media::PixelMap> pixelMap) = 0;
     virtual void OnKeyRequest(const std::string &mediaId, const std::vector<uint8_t> &keyRequestData) = 0;
     virtual void OnAvailableCapabilityChanged(const StreamCapability &streamCapability) = 0;
+    virtual void OnMediaInfoChanged(const MediaInfo &mediaInfo) = 0;
 
 protected:
     enum {
@@ -72,6 +73,7 @@ protected:
         ON_ALBUM_COVER_CHANGED,
         ON_KEY_REQUEST,
         ON_AVAILABLE_CAPABILITY_CHANGED,
+        ON_MEDIA_INFO_CHANGED,
     };
 };
 } // namespace CastEngine
