@@ -360,6 +360,11 @@ void StreamPlayerListenerImplStub::OnAvailableCapabilityChanged(const StreamCapa
 {
     static_cast<void>(streamCapability);
 }
+
+void StreamPlayerListenerImplStub::OnMediaInfoChanged(const MediaInfo &mediaInfo)
+{
+    static_cast<void>(mediaInfo);
+}
 } // namespace CastEngineClient
 } // namespace CastEngine
 } // namespace OHOS
