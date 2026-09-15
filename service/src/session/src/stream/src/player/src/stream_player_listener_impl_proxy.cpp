@@ -410,7 +410,10 @@ void StreamPlayerListenerImplProxy::OnMediaInfoChanged(const MediaInfo &mediaInf
         CLOGE("Failed to write the mediaInfo");
         return;
     }
-    CHECK_AND_RETURN_VOID_LOG(Remote() == nullptr, "Remote() is null");
+    if (Remote() == nullptr) {
+        CLOGE("Remote() is null");
+        return;
+    }
     if (Remote()->SendRequest(ON_MEDIA_INFO_CHANGED, data, reply, option) != ERR_NONE) {
         CLOGE("Failed to send ipc request when reporting media info change");
     }

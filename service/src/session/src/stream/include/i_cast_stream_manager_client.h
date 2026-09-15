@@ -46,6 +46,7 @@ public:
     virtual bool NotifyPeerSetAvailableCapability(const StreamCapability &streamCapability) = 0;
     virtual bool NotifyPeerSetSpeed(int speed) = 0;
     virtual bool NotifyPeerKeyResponse(const std::string &mediaId, const std::vector<uint8_t> &response) = 0;
+    virtual bool NotifyPeerMediaInfoChanged(const MediaInfo &mediaInfo) = 0;
     virtual void OnEvent(EventId eventId, const std::string &data) = 0;
     virtual PlayerStates GetPlayerStatus() = 0;
     virtual int GetPosition() = 0;

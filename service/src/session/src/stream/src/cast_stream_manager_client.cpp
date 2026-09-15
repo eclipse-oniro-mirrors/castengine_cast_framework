@@ -288,6 +288,14 @@ bool CastStreamManagerClient::NotifyPeerKeyResponse(const std::string &mediaId, 
     return SendControlAction(ACTION_PROVIDE_KEY_RESPONSE, body);
 }
 
+bool CastStreamManagerClient::NotifyPeerMediaInfoChanged(const MediaInfo &mediaInfo)
+{
+    CLOGD("NotifyPeerMediaInfoChanged in");
+    CastJsonObject body(false);
+    EncapMediaInfo(mediaInfo, body, IsDoubleFrame());
+    return SendControlAction(ACTION_MEDIA_INFO_CHANGED, std::move(body));
+}
+
 PlayerStates CastStreamManagerClient::GetPlayerStatus()
 {
     CLOGD("GetPlayerStatus in");

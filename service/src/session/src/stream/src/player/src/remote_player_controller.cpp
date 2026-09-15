@@ -633,6 +633,27 @@ int32_t RemotePlayerController::ProvideKeyResponse(const std::string &mediaId, c
     return CAST_ENGINE_SUCCESS;
 }
 
+int32_t RemotePlayerController::UpdateMediaInfo(const MediaInfo &mediaInfo)
+{
+    CLOGI("UpdateMediaInfo in");
+    auto playerListener = PlayerListenerGetter();
+    if (!playerListener) {
+        CLOGE("playerListener is nullptr");
+        return CAST_ENGINE_ERROR;
+    }
+    playerListener->OnMediaInfoChanged(mediaInfo);
+    std::shared_ptr<ICastStreamManagerClient> targetCallback = callback_.lock();
+    if (!targetCallback) {
+        CLOGE("ICastStreamManagerClient is null");
+        return CAST_ENGINE_ERROR;
+    }
+    if (!targetCallback->NotifyPeerMediaInfoChanged(mediaInfo)) {
+        CLOGE("NotifyPeerMediaInfoChanged failed");
+        return CAST_ENGINE_ERROR;
+    }
+    return CAST_ENGINE_SUCCESS;
+}
+
 int32_t RemotePlayerController::Release()
 {
     std::lock_guard<std::mutex> lock(sessionCallbackMutex_);

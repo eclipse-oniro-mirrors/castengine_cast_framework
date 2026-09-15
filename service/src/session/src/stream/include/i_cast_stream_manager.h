@@ -136,6 +136,7 @@ protected:
     const std::string ACTION_PLAYER_STATUS_CHANGED = "onPlayerStatusChanged";
     const std::string ACTION_POSITION_CHANGED = "onPositionChanged";
     const std::string ACTION_MEDIA_ITEM_CHANGED = "onMediaItemChanged";
+    const std::string ACTION_MEDIA_INFO_CHANGED = "onMediaInfoChanged";
     const std::string ACTION_VOLUME_CHANGED = "onVolumeChanged";
     const std::string ACTION_REPEAT_MODE_CHANGED = "onRepeatModeChanged";
     const std::string ACTION_SPEED_CHANGED = "onPlaySpeedChanged";
