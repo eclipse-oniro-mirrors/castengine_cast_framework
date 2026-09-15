@@ -280,6 +280,24 @@ napi_status NapiStreamPlayer::OnMediaItemChanged(napi_env env, napi_value callba
     return napi_ok;
 }
 
+napi_value NapiStreamPlayer::OnMediaInfoChanged(napi_env env, napi_callback_info info)
+{
+    if (napiStreamPlayer == nullptr) {
+        CLOGE("napiStreamPlayer is null");
+        return napi_generic_failure;
+    }
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
+        CLOGE("napi stream player callback is null");
+        return napi_generic_failure;
+    }
+    if (napiListener->AddCallback(env, NapiStreamPlayerListener::EVENT_MEDIA_INFO_CHANGED,
+        callback) != napi_ok) {
+        return napi_generic_failure;
+    }
+    return napi_ok;
+}
+
 napi_status NapiStreamPlayer::OnVolumeChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer)
 {
     if (napiStreamPlayer == nullptr) {
@@ -508,6 +526,24 @@ napi_status NapiStreamPlayer::OffMediaItemChanged(napi_env env, napi_value callb
         return napi_generic_failure;
     }
     if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_MEDIA_ITEM_CHANGED,
+        callback) != napi_ok) {
+        return napi_generic_failure;
+    }
+    return napi_ok;
+}
+
+napi_value NapiStreamPlayer::OffMediaInfoChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer)
+{
+    if (napiStreamPlayer == nullptr) {
+        CLOGE("napiStreamPlayer is null");
+        return napi_generic_failure;
+    }
+    auto napiListener = napiStreamPlayer->NapiListenerGetter();
+    if (!napiListener) {
+        CLOGE("napi stream player callback is null");
+        return napi_generic_failure;
+    }
+    if (napiListener->RemoveCallback(env, NapiStreamPlayerListener::EVENT_MEDIA_INFO_CHANGED,
         callback) != napi_ok) {
         return napi_generic_failure;
     }

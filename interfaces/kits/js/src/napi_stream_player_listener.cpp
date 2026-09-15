@@ -92,6 +92,17 @@ void NapiStreamPlayerListener::OnMediaItemChanged(const MediaInfo &mediaInfo)
     CLOGD("OnMediaItemChanged finish");
 }
 
+void NapiStreamPlayerListener::OnMediaInfoChanged(const MediaInfo &mediaInfo)
+{
+    CLOGD("OnMediaInfoChanged start");
+    NapiArgsGetter napiArgsGetter = [mediaInfo](napi_env env, int &argc, napi_value *argv) {
+        argc = CALLBACK_ARGC_ONE;
+        argv[0] = ConvertMediaInfoToJS(env, mediaInfo);
+    };
+    HandleEvent(EVENT_MEDIA_INFO_CHANGED, napiArgsGetter);
+    CLOGD("OnMediaInfoChanged finish");
+}
+
 void NapiStreamPlayerListener::OnVolumeChanged(int volume, int maxVolume)
 {
     CLOGD("OnVolumeChanged start");

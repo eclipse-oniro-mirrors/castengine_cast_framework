@@ -53,6 +53,7 @@ public:
         EVENT_ALBUM_COVER_CHANGED,
         EVENT_KEY_REQUEST,
         EVENT_AVAILABLE_CAPABILITY_CHANGED,
+        EVENT_MEDIA_INFO_CHANGED,
         EVENT_TYPE_MAX
     };
 
@@ -62,6 +63,7 @@ public:
     void OnStateChanged(const PlayerStates playbackState, bool isPlayWhenReady) override;
     void OnPositionChanged(int position, int bufferPosition, int duration) override;
     void OnMediaItemChanged(const MediaInfo &mediaInfo) override;
+    void OnMediaInfoChanged(const MediaInfo &mediaInfo) override;
     void OnVolumeChanged(int volume, int maxVolume) override;
     void OnVideoSizeChanged(int width, int height) override;
     void OnLoopModeChanged(const LoopMode loopMode) override;
