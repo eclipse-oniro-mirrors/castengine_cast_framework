@@ -263,11 +263,9 @@ int32_t StreamPlayerListenerImplStub::DoOnMediaInfoChangedTask(MessageParcel &da
     }
     if (userListener_ == nullptr) {
         CLOGE("userListener_ is null");
-        CheckAndCloseFd(*mediaInfo);
         return ERR_NULL_OBJECT;
     }
     userListener_->OnMediaInfoChanged(*mediaInfo);
-    CheckAndCloseFd(*mediaInfo);
     return ERR_NONE;
 }
 
