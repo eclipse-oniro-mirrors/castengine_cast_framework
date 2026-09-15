@@ -291,8 +291,8 @@ bool CastStreamManagerClient::NotifyPeerKeyResponse(const std::string &mediaId, 
 bool CastStreamManagerClient::NotifyPeerMediaInfoChanged(const MediaInfo &mediaInfo)
 {
     CLOGD("NotifyPeerMediaInfoChanged in");
-    CastJsonObject body(false);
-    EncapMediaInfo(mediaInfo, body, IsDoubleFrame());
+    json info;
+    EncapMediaInfo(mediaInfo, info, IsDoubleFrame());
     return SendControlAction(ACTION_MEDIA_INFO_CHANGED, std::move(body));
 }
 
