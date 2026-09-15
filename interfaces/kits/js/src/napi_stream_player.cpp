@@ -280,7 +280,7 @@ napi_status NapiStreamPlayer::OnMediaItemChanged(napi_env env, napi_value callba
     return napi_ok;
 }
 
-napi_value NapiStreamPlayer::OnMediaInfoChanged(napi_env env, napi_callback_info info)
+napi_status NapiStreamPlayer::OnMediaInfoChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer)
 {
     if (napiStreamPlayer == nullptr) {
         CLOGE("napiStreamPlayer is null");
@@ -532,7 +532,7 @@ napi_status NapiStreamPlayer::OffMediaItemChanged(napi_env env, napi_value callb
     return napi_ok;
 }
 
-napi_value NapiStreamPlayer::OffMediaInfoChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer)
+napi_status NapiStreamPlayer::OffMediaInfoChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer)
 {
     if (napiStreamPlayer == nullptr) {
         CLOGE("napiStreamPlayer is null");
