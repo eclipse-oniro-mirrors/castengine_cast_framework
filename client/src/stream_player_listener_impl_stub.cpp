@@ -57,6 +57,7 @@ StreamPlayerListenerImplStub::StreamPlayerListenerImplStub(std::shared_ptr<IStre
     FILL_SINGLE_STUB_TASK(ON_KEY_REQUEST, &StreamPlayerListenerImplStub::DoOnKeyRequestTask);
     FILL_SINGLE_STUB_TASK(ON_AVAILABLE_CAPABILITY_CHANGED,
         &StreamPlayerListenerImplStub::DoOnAvailableCapabilityChangedTask);
+    FILL_SINGLE_STUB_TASK(ON_MEDIA_INFO_CHANGED, &StreamPlayerListenerImplStub::DoOnMediaInfoChangedTask);
 }
 
 StreamPlayerListenerImplStub::~StreamPlayerListenerImplStub()
@@ -252,6 +253,22 @@ int32_t StreamPlayerListenerImplStub::DoOnAvailableCapabilityChangedTask(Message
     return ERR_NONE;
 }
 
+int32_t StreamPlayerListenerImplStub::DoOnMediaInfoChangedTask(MessageParcel &data, MessageParcel &reply)
+{
+    static_cast<void>(reply);
+    auto mediaInfo = ReadMediaInfo(data);
+    if (mediaInfo == nullptr) {
+        CLOGE("DoOnMediaInfoChangedTask, mediaInfo is null");
+        return ERR_NULL_OBJECT;
+    }
+    if (userListener_ == nullptr) {
+        CLOGE("userListener_ is null");
+        return ERR_NULL_OBJECT;
+    }
+    userListener_->OnMediaInfoChanged(*mediaInfo);
+    return ERR_NONE;
+}
+
 void StreamPlayerListenerImplStub::OnStateChanged(const PlayerStates playbackState, bool isPlayWhenReady)
 {
     static_cast<void>(playbackState);
@@ -340,6 +357,11 @@ void StreamPlayerListenerImplStub::OnKeyRequest(const std::string &mediaId, cons
 void StreamPlayerListenerImplStub::OnAvailableCapabilityChanged(const StreamCapability &streamCapability)
 {
     static_cast<void>(streamCapability);
+}
+
+void StreamPlayerListenerImplStub::OnMediaInfoChanged(const MediaInfo &mediaInfo)
+{
+    static_cast<void>(mediaInfo);
 }
 } // namespace CastEngineClient
 } // namespace CastEngine

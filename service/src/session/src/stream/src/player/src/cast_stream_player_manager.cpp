@@ -622,6 +622,12 @@ int32_t CastStreamPlayerManager::ProvideKeyResponse(const std::string &mediaId, 
     return CAST_ENGINE_ERROR;
 }
 
+int32_t CastStreamPlayerManager::UpdateMediaInfo(const MediaInfo &mediaInfo)
+{
+    CLOGE("Don't support UpdateMediaInfo");
+    return CAST_ENGINE_ERROR;
+}
+
 int32_t CastStreamPlayerManager::Release()
 {
     Stop();

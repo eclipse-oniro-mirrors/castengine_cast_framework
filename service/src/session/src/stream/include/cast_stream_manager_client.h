@@ -61,6 +61,7 @@ public:
     bool NotifyPeerSetAvailableCapability(const StreamCapability &streamCapability) override;
     bool NotifyPeerSetSpeed(int speed) override;
     bool NotifyPeerKeyResponse(const std::string &mediaId, const std::vector<uint8_t> &response) override;
+    bool NotifyPeerMediaInfoChanged(const MediaInfo &mediaInfo) override;
     PlayerStates GetPlayerStatus() override;
     int GetPosition() override;
     int GetDuration() override;

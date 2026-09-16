@@ -92,6 +92,7 @@ private:
     static napi_status OnStateChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OnPositionChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OnMediaItemChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
+    static napi_status OnMediaInfoChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OnVolumeChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OnVideoSizeChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OnLoopModeChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
@@ -106,6 +107,7 @@ private:
     static napi_status OffStateChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OffPositionChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OffMediaItemChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
+    static napi_status OffMediaInfoChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OffVolumeChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OffVideoSizeChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);
     static napi_status OffLoopModeChanged(napi_env env, napi_value callback, NapiStreamPlayer *napiStreamPlayer);

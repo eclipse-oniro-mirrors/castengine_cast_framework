@@ -395,6 +395,29 @@ void StreamPlayerListenerImplProxy::OnAvailableCapabilityChanged(const StreamCap
         return;
     }
 }
+
+void StreamPlayerListenerImplProxy::OnMediaInfoChanged(const MediaInfo &mediaInfo)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+ 
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        CLOGE("Failed to write the interface token");
+        return;
+    }
+    if (!WriteMediaInfo(data, mediaInfo)) {
+        CLOGE("Failed to write the mediaInfo");
+        return;
+    }
+    if (Remote() == nullptr) {
+        CLOGE("Remote() is null");
+        return;
+    }
+    if (Remote()->SendRequest(ON_MEDIA_INFO_CHANGED, data, reply, option) != ERR_NONE) {
+        CLOGE("Failed to send ipc request when reporting media info change");
+    }
+}
 } // namespace CastEngineService
 } // namespace CastEngine
 } // namespace OHOS

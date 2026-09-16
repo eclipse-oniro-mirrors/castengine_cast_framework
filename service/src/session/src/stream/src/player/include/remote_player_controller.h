@@ -66,6 +66,7 @@ public:
     int32_t GetPlaySpeed(PlaybackSpeed &playbackSpeed) override;
     int32_t GetMediaInfoHolder(MediaInfoHolder &mediaInfoHolder) override;
     int32_t ProvideKeyResponse(const std::string &mediaId, const std::vector<uint8_t> &response) override;
+    int32_t UpdateMediaInfo(const MediaInfo &mediaInfo) override;
     int32_t Release() override;
 
 protected:

@@ -69,6 +69,7 @@ public:
     virtual int32_t GetPlaySpeed(PlaybackSpeed &playbackSpeed) = 0;
     virtual int32_t GetMediaInfoHolder(MediaInfoHolder &mediaInfoHolder) = 0;
     virtual int32_t ProvideKeyResponse(const std::string &mediaId, const std::vector<uint8_t> &response) = 0;
+    virtual int32_t UpdateMediaInfo(const MediaInfo &mediaInfo) = 0;
     virtual int32_t Release() = 0;
 
 protected:
@@ -103,6 +104,7 @@ protected:
         GET_PLAY_SPEED,
         GET_MEDIA_INFO_HOLDER,
         PROVIDE_KEY_RESPONSE,
+        UPDATE_MEDIA_INFO,
         RELEASE
     };
     static const size_t MAX_PLAY_LIST_SIZE = 100;

@@ -217,6 +217,11 @@ int32_t StreamPlayer::ProvideKeyResponse(const std::string &mediaId, const std::
     return proxy_ ? proxy_->ProvideKeyResponse(mediaId, response) : CAST_ENGINE_ERROR;
 }
 
+int32_t StreamPlayer::UpdateMediaInfo(const MediaInfo &mediaInfo)
+{
+    return proxy_ ? proxy_->UpdateMediaInfo(mediaInfo) : CAST_ENGINE_ERROR;
+}
+
 int32_t StreamPlayer::Release()
 {
     return proxy_ ? proxy_->Release() : CAST_ENGINE_ERROR;

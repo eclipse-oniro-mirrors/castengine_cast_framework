@@ -799,6 +799,16 @@ int32_t StreamPlayerImplStub::ProvideKeyResponse(const std::string &mediaId, con
     return streamPlayerImpl->ProvideKeyResponse(mediaId, response);
 }
 
+int32_t StreamPlayerImplStub::UpdateMediaInfo(const MediaInfo &mediaInfo)
+{
+    auto streamPlayerImpl = PlayerImplGetter();
+    if (!streamPlayerImpl) {
+        CLOGE("playerImpl is nullptr");
+        return CAST_ENGINE_ERROR;
+    }
+    return streamPlayerImpl->UpdateMediaInfo(mediaInfo);
+}
+
 int32_t StreamPlayerImplStub::Release()
 {
     auto streamPlayerImpl = PlayerImplGetter();
