@@ -626,6 +626,7 @@ struct EXPORT CastRemoteDevice {
     std::string uuid {""};
     bool isSupportDeviceCast{ false };
     std::vector<ServiceInfo> serviceInfos;
+    std::string brMac{""};
 };
 
 enum class EXPORT HiPlayCastMode {
