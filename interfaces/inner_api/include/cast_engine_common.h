@@ -80,12 +80,13 @@ enum class EXPORT TriggerType {
     PASSIVE_BIND_TAG = 3,
     HIPLAY_DEVICE_BROADCAST = 5,
     HIPLAY_SCAN_QRCODE = 6,
+    HIPLAY_NFC_CONNECT = 7,
 };
 
 inline bool EXPORT IsTriggerType(int32_t type)
 {
     return (type >= static_cast<int32_t>(TriggerType::UNSPEC_TAG)) &&
-        (type <= static_cast<int32_t>(TriggerType::HIPLAY_SCAN_QRCODE));
+        (type <= static_cast<int32_t>(TriggerType::HIPLAY_NFC_CONNECT));
 }
 
 enum class EXPORT DeviceState {
@@ -797,6 +798,8 @@ struct EXPORT ConnectionConfig {
     uint32_t sessionKeyLength{0};
     const uint8_t *sessionKey{nullptr};
     TriggerType triggerType{TriggerType::UNSPEC_TAG};
+    std::string remoteWifiIp;
+    int16_t wifiPort;
 };
 
 enum class EXPORT PlaybackSpeed {
