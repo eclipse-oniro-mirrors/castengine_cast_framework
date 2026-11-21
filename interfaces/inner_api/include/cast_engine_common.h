@@ -81,12 +81,13 @@ enum class EXPORT TriggerType {
     HIPLAY_DEVICE_BROADCAST = 5,
     HIPLAY_SCAN_QRCODE = 6,
     HIPLAY_NFC_CONNECT = 7,
+    HIPLAY_NET_CONFIG = 8,
 };
 
 inline bool EXPORT IsTriggerType(int32_t type)
 {
     return (type >= static_cast<int32_t>(TriggerType::UNSPEC_TAG)) &&
-        (type <= static_cast<int32_t>(TriggerType::HIPLAY_NFC_CONNECT));
+        (type <= static_cast<int32_t>(TriggerType::HIPLAY_NET_CONFIG));
 }
 
 enum class EXPORT DeviceState {
@@ -103,6 +104,7 @@ enum class EXPORT DeviceState {
     AUTHING,
     MIRROR_TO_STREAM,
     STREAM_TO_MIRROR,
+    BLE_CONNECTED,
     DEVICE_STATE_MAX,
 };
 
@@ -128,6 +130,7 @@ enum ConnectStageResult : int32_t {
     CONNECT_FAIL,
     CONNECT_SUCCESS,
     DISCONNECT_START,
+    BLE_CONNECTED,
 };
 
 /*
@@ -159,7 +162,7 @@ enum EXPORT ReasonCode {
 
 const EXPORT std::array<std::string, static_cast<size_t>(DeviceState::DEVICE_STATE_MAX)> DEVICE_STATE_STRING = {
     "CONNECTING", "CONNECTED", "PAUSED", "PLAYING", "DISCONNECTING", "DISCONNECTED", "STREAM",
-    "MIRROR_TO_UI", "UI_TO_MIRROR", "UICAST", "AUTHING",
+    "MIRROR_TO_UI", "UI_TO_MIRROR", "UICAST", "AUTHING", "BLE_CONNECTED",
 };
 
 const size_t EXPORT MIRROR_TO_STREAM_APP_LIST_LEN = 5;
@@ -628,6 +631,14 @@ struct EXPORT CastRemoteDevice {
     bool isSupportDeviceCast{ false };
     std::vector<ServiceInfo> serviceInfos;
     std::string brMac{""};
+    bool isSupportNetworkConfig{false};
+};
+
+enum HiPlayCapability : uint32_t {
+    SPATIAL_AUDIO_CAP = 1 << 0,
+    DEVICE_NAME_CHANGE_CAP = 1 << 1,
+    DEVICE_INFO_CAP = 1 << 2,
+    DEVICE_P2P_CAP = 1 << 3,
 };
 
 enum class EXPORT HiPlayCastMode {
@@ -698,6 +709,7 @@ enum class EXPORT EventId {
     HIPLAY_CONFIG_MODE = 4204,
     HIPLAY_CONFIG_MODE_RESULT = 4205,
     HIPLAY_MODE_CHANGE = 4206,
+    HIPLAY_CONTINUE_CONNECT = 4210,
     HIPLAY_END = 4250,
     EVENT_END = 5000,
 };
