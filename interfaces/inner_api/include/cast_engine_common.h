@@ -130,6 +130,7 @@ enum ConnectStageResult : int32_t {
     CONNECT_FAIL,
     CONNECT_SUCCESS,
     DISCONNECT_START,
+    BLE_CONNECTED,
 };
 
 /*
