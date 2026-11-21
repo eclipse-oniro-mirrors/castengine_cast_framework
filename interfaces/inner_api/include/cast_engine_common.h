@@ -636,6 +636,13 @@ struct EXPORT CastRemoteDevice {
     bool isSupportNetworkConfig{false};
 };
 
+enum HiPlayCapability : uint32_t {
+    SPATIAL_AUDIO_CAP = 1 << 0,
+    DEVICE_NAME_CHANGE_CAP = 1 << 1,
+    DEVICE_INFO_CAP = 1 << 2,
+    DEVICE_P2P_CAP = 1 << 3,
+};
+
 enum class EXPORT HiPlayCastMode {
     DEVICE_LEVEL = 1,
     APP_LEVEL = 2,
