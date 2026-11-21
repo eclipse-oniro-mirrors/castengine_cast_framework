@@ -81,6 +81,7 @@ enum class EXPORT TriggerType {
     HIPLAY_DEVICE_BROADCAST = 5,
     HIPLAY_SCAN_QRCODE = 6,
     HIPLAY_NFC_CONNECT = 7,
+    HIPLAY_NET_CONFIG = 8,
 };
 
 inline bool EXPORT IsTriggerType(int32_t type)
